@@ -1,0 +1,191 @@
+@import "tailwindcss";
+
+/* Tell Tailwind v4 to use .dark class instead of prefers-color-scheme */
+@custom-variant dark (&:is(.dark *));
+
+/* --- Light/Dark mode CSS variable definitions --- */
+:root {
+  --bg: #ffffff;
+  --fg: #0f172a;
+  --card-bg: #ffffff;
+  --card-fg: #0f172a;
+  --primary-c: #2563eb;
+  --primary-fg: #ffffff;
+  --secondary-c: #f1f5f9;
+  --secondary-fg: #0f172a;
+  --muted-c: #f1f5f9;
+  --muted-fg: #64748b;
+  --accent-c: #f1f5f9;
+  --accent-fg: #0f172a;
+  --destructive-c: #ef4444;
+  --destructive-fg: #ffffff;
+  --border-c: #e2e8f0;
+  --input-c: #e2e8f0;
+  --ring-c: #2563eb;
+  --success-c: #22c55e;
+  --warning-c: #f59e0b;
+  --info-c: #3b82f6;
+  --sidebar-c: #f8fafc;
+  --sidebar-fg: #0f172a;
+  --sidebar-border-c: #e2e8f0;
+  --citation-c: #0d9488;
+  --citation-fg: #ffffff;
+}
+
+.dark {
+  --bg: #0f172a;
+  --fg: #f1f5f9;
+  --card-bg: #1e293b;
+  --card-fg: #f1f5f9;
+  --primary-c: #3b82f6;
+  --primary-fg: #ffffff;
+  --secondary-c: #1e293b;
+  --secondary-fg: #f1f5f9;
+  --muted-c: #1e293b;
+  --muted-fg: #94a3b8;
+  --accent-c: #1e293b;
+  --accent-fg: #f1f5f9;
+  --destructive-c: #dc2626;
+  --destructive-fg: #ffffff;
+  --border-c: #334155;
+  --input-c: #334155;
+  --ring-c: #3b82f6;
+  --success-c: #22c55e;
+  --warning-c: #f59e0b;
+  --info-c: #3b82f6;
+  --sidebar-c: #0f172a;
+  --sidebar-fg: #f1f5f9;
+  --sidebar-border-c: #334155;
+  --citation-c: #14b8a6;
+  --citation-fg: #ffffff;
+}
+
+/* --- Tailwind theme referencing the mode-aware CSS vars --- */
+@theme {
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-card: var(--card-bg);
+  --color-card-foreground: var(--card-fg);
+  --color-primary: var(--primary-c);
+  --color-primary-foreground: var(--primary-fg);
+  --color-secondary: var(--secondary-c);
+  --color-secondary-foreground: var(--secondary-fg);
+  --color-muted: var(--muted-c);
+  --color-muted-foreground: var(--muted-fg);
+  --color-accent: var(--accent-c);
+  --color-accent-foreground: var(--accent-fg);
+  --color-destructive: var(--destructive-c);
+  --color-destructive-foreground: var(--destructive-fg);
+  --color-border: var(--border-c);
+  --color-input: var(--input-c);
+  --color-ring: var(--ring-c);
+
+  --color-success: var(--success-c);
+  --color-warning: var(--warning-c);
+  --color-info: var(--info-c);
+
+  --color-sidebar: var(--sidebar-c);
+  --color-sidebar-foreground: var(--sidebar-fg);
+  --color-sidebar-border: var(--sidebar-border-c);
+
+  --color-citation: var(--citation-c);
+  --color-citation-foreground: var(--citation-fg);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-foreground);
+}
+
+/* Typing indicator animation */
+@keyframes bounce-dot {
+  0%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+}
+.typing-dot {
+  animation: bounce-dot 1.4s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) {
+  animation-delay: 0.16s;
+}
+.typing-dot:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+/* Markdown styling for AI messages */
+.markdown-content h1 {
+  @apply text-lg font-bold mt-3 mb-1;
+}
+.markdown-content h2 {
+  @apply text-base font-bold mt-3 mb-1;
+}
+.markdown-content h3 {
+  @apply text-sm font-semibold mt-2 mb-1;
+}
+.markdown-content p {
+  @apply mb-2 leading-relaxed;
+}
+.markdown-content ul {
+  @apply list-disc list-inside mb-2 space-y-0.5;
+}
+.markdown-content ol {
+  @apply list-decimal list-inside mb-2 space-y-0.5;
+}
+.markdown-content li {
+  @apply leading-relaxed;
+}
+.markdown-content code {
+  @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono;
+}
+.markdown-content pre {
+  @apply bg-muted p-3 rounded-lg overflow-x-auto mb-2;
+}
+.markdown-content pre code {
+  @apply bg-transparent p-0;
+}
+.markdown-content blockquote {
+  @apply border-l-4 border-primary/30 pl-3 italic text-muted-foreground mb-2;
+}
+.markdown-content table {
+  @apply w-full border-collapse mb-2;
+}
+.markdown-content th {
+  @apply border border-border px-2 py-1 bg-muted font-semibold text-left text-sm;
+}
+.markdown-content td {
+  @apply border border-border px-2 py-1 text-sm;
+}
+.markdown-content strong {
+  @apply font-semibold;
+}
+.markdown-content a {
+  @apply text-primary underline;
+}

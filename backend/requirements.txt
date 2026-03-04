@@ -1,0 +1,72 @@
+# ============================================
+# Healthcare RAG Chatbot - Python Dependencies
+# ============================================
+
+# --- Web Framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.18
+
+# --- Azure OpenAI (LLM + Embeddings via Azure AI Foundry) ---
+openai==1.58.1
+
+# --- LangChain + LangGraph (Agent orchestration) ---
+langchain==0.3.13
+langchain-openai==0.3.0
+langchain-community==0.3.13
+langgraph==0.2.60
+
+# --- Azure AI Search (hybrid search: vector + BM25 + RRF in one call) ---
+azure-search-documents==11.6.0
+azure-core==1.32.0
+
+# --- Azure Blob Storage (document source) ---
+azure-storage-blob==12.24.0
+
+# --- Cross-Encoder Re-ranking ---
+sentence-transformers==3.3.1
+
+# --- Document Processing ---
+PyMuPDF==1.25.1          # PDF extraction (fast, table-aware)
+pymupdf4llm==0.0.17      # PDF to markdown for LLM consumption
+python-pptx==1.0.2        # PowerPoint extraction
+python-docx==1.1.2        # Word .docx extraction
+textract-py3==3.0.0       # Fallback for .doc files
+
+# --- Data Processing ---
+pyyaml==6.0.2             # Prompt config files
+pydantic==2.10.3          # Settings and data validation
+pydantic-settings==2.7.0  # Environment variable management
+
+# --- Database (PostgreSQL) ---
+asyncpg==0.30.0           # Async PostgreSQL driver
+sqlalchemy[asyncio]==2.0.36
+openpyxl==3.1.5           # Excel file creation
+
+# --- Email ---
+aiosmtplib==3.0.2         # Async email sending
+
+# --- Authentication (Azure Entra ID) ---
+fastapi-azure-auth==5.0.0
+python-jose[cryptography]==3.3.0
+
+# --- Monitoring ---
+azure-monitor-opentelemetry==1.6.4
+opentelemetry-api==1.29.0
+opentelemetry-sdk==1.29.0
+opentelemetry-instrumentation-fastapi==0.50b0
+
+# --- RAG Evaluation ---
+ragas==0.2.8
+datasets==3.2.0
+
+# --- Testing ---
+pytest==8.3.4
+pytest-asyncio==0.25.0
+httpx==0.28.1             # Async HTTP client for testing
+
+# --- Linting ---
+ruff==0.9.6
+
+# --- Utilities ---
+python-dotenv==1.0.1

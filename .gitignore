@@ -1,0 +1,55 @@
+# ============================================
+# .gitignore
+# ============================================
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Environment variables (NEVER commit secrets)
+.env
+.env.local
+.env.production
+
+# IDE / Tools
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+postgres-data/
+chroma-data/
+
+# Node (frontend)
+node_modules/
+.next/
+out/
+
+# Test / Coverage
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Logs
+*.log
+
+# Large files (documents stay in Docs/ but don't need to be in git)
+# Uncomment the next line if you don't want docs in version control:
+# Docs/
+*.zip

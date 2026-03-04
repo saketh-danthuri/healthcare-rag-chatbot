@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "description": "Golden evaluation dataset for healthcare operations RAG chatbot. Each sample contains a question that ops teams commonly ask, the correct answer from the runbooks, and which source documents contain the answer.",
+  "samples": [
+    {
+      "question": "What should I do if CFT303A has not started by 3 AM?",
+      "ground_truth": "This triggers ATL101Y alert. Check CFT303A, CFT303B, and CFT303D. If CFT303A has not started, check which dependencies are not met - it could be that CFT301B (recycle process) has not started or is stuck. If CFT303A has completed normally, check CFT303B. If CFT303B is not running, check agent VA01PMSQSIS001_ProdUS. If CFT303B is running, check if files are getting picked up from OTVM input location. If files are not getting picked up, call the OSS team about OTVM issue. If no files in Vendor Dropoff locations, this means issue with Axway - reach out to MGFT team. Call COPS SME if unable to find issue.",
+      "source_docs": ["ATL101Y_1D00_CLAIMS_LOAD_NOT_STARTED_ALERT"],
+      "category": "troubleshooting"
+    },
+    {
+      "question": "What does ATL101Y do and when does it trigger?",
+      "ground_truth": "ATL101Y is a sanity check alert that monitors whether CFTims Processing has begun. It triggers if CFT303A is not completed normally by 3 AM. CFT303A is the first job for CFTims processing. If it has not started by 3 AM, it means the new day CFTims processing has not started yet. COPS will get a call out to investigate the delay. If ATL101Y shows as timed out, it means CFT303A completed normally before 3AM and no troubleshooting is needed.",
+      "source_docs": ["ATL101Y_1D00_CLAIMS_LOAD_NOT_STARTED_ALERT"],
+      "category": "knowledge"
+    },
+    {
+      "question": "What is the process location for ATL101Y and what is its priority?",
+      "ground_truth": "ATL101Y runs on EDINET1P with Priority 1. It runs on a Daily calendar. The internal notification goes to COPS SME On-Call. There is no customer notification or broadcast distribution list for this alert.",
+      "source_docs": ["ATL101Y_1D00_CLAIMS_LOAD_NOT_STARTED_ALERT"],
+      "category": "knowledge"
+    },
+    {
+      "question": "When should the first load in CIRT start?",
+      "ground_truth": "The first load in CIRT should start around 1:30 AM.",
+      "source_docs": ["ATL101Y_1D00_CLAIMS_LOAD_NOT_STARTED_ALERT"],
+      "category": "knowledge"
+    },
+    {
+      "question": "Where can I find the OTVM input location for each vendor?",
+      "ground_truth": "The OTVM input location for each vendor can be identified from EDINETCFTIM_JC.cift.ETLSourceInputFileConfig table in EDINET1P.",
+      "source_docs": ["ATL101Y_1D00_CLAIMS_LOAD_NOT_STARTED_ALERT"],
+      "category": "knowledge"
+    },
+    {
+      "question": "If CFT303B is running but files are not coming out of OTVM, what should I do?",
+      "ground_truth": "If CFT303B is running and the files are getting picked up but are not coming out of OTVM, then call the OSS team.",
+      "source_docs": ["ATL101Y_1D00_CLAIMS_LOAD_NOT_STARTED_ALERT"],
+      "category": "troubleshooting"
+    },
+    {
+      "question": "What teams are involved in the COPs runbook operations?",
+      "ground_truth": "The COPs runbooks cover AtlasOps jobs (ATL series), CIFT Runbooks (CFT series), EEWS Runbooks, FICR Runbooks (CLM series), and Quest Runbooks. The operations involve teams like COPS SME On-Call, OSS team (for OTVM issues), MGFT team (for Axway file transfer issues), and NAS team (for storage).",
+      "source_docs": ["Runbook Search"],
+      "category": "knowledge"
+    },
+    {
+      "question": "What are the different runbook categories in the system?",
+      "ground_truth": "The runbook categories include: EDWOPS Runbooks (ACMP, Caremore, CART, COMPASS, Cube, Edifecs, Enterprise Reporting, ESI Jobs, FTS Automation, IAP, ISO Tidal Jobs, MEDFIN, MEDISPAN, NCC Jobs, Ohio, On-Demand Jobs, Other, PIDs XC1/XC2/XC3 Jobs, Provider Data Exchange, VLM Runbooks), RCR Runbooks (Enroll), COPs Runbooks (AtlasOps, CIFT, EEWS, FICR, Quest), Provider Runbooks (PIDS, PODS), Enrollment Jobs, Pathfinders/IT CAM Jobs, CRDR Runbooks, and EIDS/Edifecs Runbooks.",
+      "source_docs": ["Runbook Search"],
+      "category": "knowledge"
+    },
+    {
+      "question": "What is the pre-requisite for ATL101Y job?",
+      "ground_truth": "The pre-requisite for ATL101Y is CFT303A_1D00_START_INBOUND_FILE_PROCESS. If CFT303A is not completed by 3:00 AM, ATL101Y will kick off.",
+      "source_docs": ["ATL101Y_1D00_CLAIMS_LOAD_NOT_STARTED_ALERT"],
+      "category": "knowledge"
+    },
+    {
+      "question": "How do I handle offline disks in the failover cluster?",
+      "ground_truth": "When dealing with offline disks in failover cluster: First, identify the offline disks and rename them for identification. Remove the offline disk from the role in failover cluster manager. Then the NAS/storage team can unmap from storage via SnapCenter. Always check with NAS team first before removing entries. If offline disks are assigned to an instance role, the instance will be in partial running state. Best practice is to monitor and send email to NAS team to confirm no offline disks are mapped before cleanup.",
+      "source_docs": ["SW.txt"],
+      "category": "troubleshooting"
+    }
+  ]
+}
