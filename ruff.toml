@@ -1,0 +1,19 @@
+# ============================================
+# Ruff Linter Configuration
+# ============================================
+# WHY: Fast Python linter (replaces flake8 + isort + pyupgrade).
+# Runs in CI on every pull request to catch issues early.
+
+target-version = "py311"
+
+[lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = ["E501"]  # Line length handled by formatter
+
+[lint.per-file-ignores]
+"backend/tests/*" = ["F401"]  # Allow unused imports in test __init__.py
+"scripts/*" = ["E402"]  # Scripts need load_dotenv() before azure imports
+
+[format]
+quote-style = "double"
+indent-style = "space"

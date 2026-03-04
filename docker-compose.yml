@@ -1,0 +1,79 @@
+# ============================================
+# docker-compose.yml - Local Development Environment
+# ============================================
+# WHY docker-compose: Spins up backend + Postgres for local development.
+# The backend connects to Azure AI Search (no local vector DB needed).
+#
+# USAGE:
+#   docker-compose up          # Start all services
+#   docker-compose up -d       # Start in background
+#   docker-compose down        # Stop all services
+#   docker-compose logs -f     # Follow logs
+#
+# AFTER FIRST START:
+#   1. Copy .env.example to .env and fill in Azure OpenAI + Azure AI Search credentials
+#   2. Run: python scripts/create_search_index.py  (create index schema)
+#   3. Run: python scripts/ingest_from_blob.py --local  (ingest local Docs/)
+#   4. Open: http://localhost:8000/docs  (Swagger UI)
+#   5. Test: curl -X POST http://localhost:8000/api/chat \
+#            -H "Content-Type: application/json" \
+#            -d '{"message": "What should I do if CFT303A has not started by 3 AM?"}'
+
+version: "3.8"
+
+services:
+  # --- FastAPI Backend ---
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount source code for hot-reload during development
+      - ./backend/app:/app/app
+      # Mount the Docs folder so the backend can read documents
+      - ./Docs:/app/docs:ro
+    environment:
+      - DOCS_BASE_PATH=/app/docs
+      - POSTGRES_HOST=postgres
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Hot-reload for development
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - chatbot-network
+
+  # --- PostgreSQL (Demo Database) ---
+  # WHY: Stores mock healthcare claims data for the query_database agent tool.
+  # In production, this connects to your actual ops database (read-only).
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # Run initialization SQL on first start
+      - ./backend/init_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    environment:
+      POSTGRES_DB: healthcare_ops
+      POSTGRES_USER: chatbot_readonly
+      POSTGRES_PASSWORD: changeme_in_production
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chatbot_readonly -d healthcare_ops"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - chatbot-network
+
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  chatbot-network:
+    driver: bridge

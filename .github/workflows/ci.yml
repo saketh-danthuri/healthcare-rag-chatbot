@@ -1,0 +1,158 @@
+# ============================================
+# CI Pipeline - Lint, Test, RAG Quality Gate
+# ============================================
+# WHY: Runs on every pull request to catch bugs, lint issues, and
+# RAG quality regressions before they reach main.
+#
+# ARCHITECTURE:
+#   backend-ci  ──┐
+#                  ├── rag-quality-gate (only if backend passes)
+#   frontend-ci ──┘ (runs independently in parallel)
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress CI runs for the same PR (saves runner minutes)
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ========================================
+  # Backend: Lint + Unit Tests
+  # ========================================
+  backend-ci:
+    name: Backend CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+
+      - name: Lint with ruff
+        run: |
+          cd backend
+          ruff check app/ tests/ ../scripts/
+          ruff format --check app/ tests/ ../scripts/
+
+      - name: Run unit tests
+        run: |
+          cd backend
+          pytest tests/unit/ -v --tb=short --no-header
+
+  # ========================================
+  # Frontend: Lint + Build
+  # ========================================
+  frontend-ci:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Lint
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Build (static export)
+        run: |
+          cd frontend
+          npm run build
+        env:
+          NEXT_PUBLIC_API_URL: https://healthcare-ops.livelypebble-70fe60f2.eastus2.azurecontainerapps.io
+
+  # ========================================
+  # RAG Quality Gate (requires Azure secrets)
+  # ========================================
+  rag-quality-gate:
+    name: RAG Quality Gate
+    runs-on: ubuntu-latest
+    needs: backend-ci
+    # Only run if backend CI passes and it's a PR
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+
+      - name: Run RAG evaluation quality gate
+        env:
+          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_API_VERSION: "2025-01-01-preview"
+          AZURE_OPENAI_CHAT_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_CHAT_DEPLOYMENT }}
+          AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+          AZURE_SEARCH_ENDPOINT: ${{ secrets.AZURE_SEARCH_ENDPOINT }}
+          AZURE_SEARCH_API_KEY: ${{ secrets.AZURE_SEARCH_API_KEY }}
+          AZURE_SEARCH_INDEX_NAME: ${{ secrets.AZURE_SEARCH_INDEX_NAME }}
+        run: |
+          cd backend
+          python -m app.evaluation.ci_eval
+
+      - name: Post results to PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Delete previous bot comments to avoid spam
+            const { data: comments } = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            for (const comment of comments) {
+              if (comment.body.includes('RAG Quality Gate Results')) {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: comment.id,
+                });
+              }
+            }
+
+            const status = '${{ job.status }}' === 'success' ? 'PASSED' : 'FAILED';
+            const emoji = status === 'PASSED' ? ':white_check_mark:' : ':x:';
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ${emoji} RAG Quality Gate: ${status}\n\nSee the [CI logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for RAGAS evaluation scores.\n\n**Thresholds:** Faithfulness >= 0.85 | Answer Relevancy >= 0.80 | Context Precision >= 0.75`
+            });

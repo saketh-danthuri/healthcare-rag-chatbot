@@ -1,0 +1,1319 @@
+More, Prasanna
+9:35 PM
+Hi Kavita, can you engage the NAS team here please and Intel team as well?
+Kavitha T
+9:35 PM
+And so which team? OK, sure, let me ask them to join.
+I think you can get roses.
+Santhosh Kumar
+9:36 PM
+AIT, can you can you hear me?
+Kavitha T
+9:36 PM
+Yes.
+So Prasad now we have Santhosh from our support.
+Santhosh Kumar
+9:36 PM
+Microsoft.
+More, Prasanna
+9:36 PM
+Hi, Santosh.
+Santosh, in the incident, basically there are some of the lands I have posted there. Those lands need to remove from the net app. Is there any way I can share my screen?
+Santhosh Kumar
+9:36 PM
+Yes, please.
+More, Prasanna
+9:36 PM
+These are the 6B. These lands is offline in failover cluster, but it is not showing in the in the folder location.
+Santhosh Kumar
+9:36 PM
+OK.
+But the folder exists.
+More, Prasanna
+9:37 PM
+What are you using here?
+Folder level it is not uh showing those one.
+Santhosh Kumar
+9:37 PM
+OK.
+More, Prasanna
+9:37 PM
+Yeah, these lumps are offline is showing in here.
+Santhosh Kumar
+9:37 PM
+OK.
+Remove this 3DW1P from the instance code.
+More, Prasanna
+9:37 PM
+Can you do it yourself? Like, you know, do we need to do?
+Santhosh Kumar
+9:37 PM
+I think it's you need to do storage team doesn't do this so.
+And uh, one minute. So the jobs were completed or?
+More, Prasanna
+9:37 PM
+Yeah, jobs are completed because of this offline. Basically the role is in partial state showing. So we need to clean up this one here. So that's why.
+Santhosh Kumar
+9:38 PM
+So I mean like right click and remove those.
+I think if you remove the toast, that partial will go.
+More, Prasanna
+9:38 PM
+Can I remove here?
+Santhosh Kumar
+9:38 PM
+Yeah, yeah.
+More, Prasanna
+9:38 PM
+Yes.
+68154319 right?
+Yeah, now we can.
+Santhosh Kumar
+9:39 PM
+Can you check the can you check that instance role now?
+More, Prasanna
+9:39 PM
+Yeah, it is running.
+Santhosh Kumar
+9:39 PM
+So The thing is on the day we discussed right why it is happening is the flux actually it's getting cleaned up, but actually that uh instance that should be removed for the process that is actually still holding on that particular offline disk.
+Yeah, so that's why it is actually moving to the partial if you cleaned up that offline disk from that role means because it should be in available storage before it's getting deleted.
+More, Prasanna
+9:39 PM
+Hmm.
+Huh.
+Santhosh Kumar
+9:39 PM
+To move to available for A. trainer, non useful, that will likely clean up. I mean the role will likely perfectly when it's running OK.
+More, Prasanna
+9:39 PM
+Mm.
+We can clean it up directly. Who is going to clean here Intel or?
+Santhosh Kumar
+9:40 PM
+What is the server?
+More, Prasanna
+9:40 PM
+Uh 006 let.
+Santhosh Kumar
+9:40 PM
+This needs to be cleaned up by winter, not.
+More, Prasanna
+9:40 PM
+Oh.
+Santhosh Kumar
+9:40 PM
+Or you can actually do it. If there is no phones present, let me check it from my end.
+More, Prasanna
+9:40 PM
+Yeah, there are no clones. Yeah, but there are no clones before it was there, the clones. But after one or two days it went away. One one day after next day it went away. But now I I did not see any stale here.
+Santhosh Kumar
+9:40 PM
+I don't know.
+More, Prasanna
+9:40 PM
+But we need to clean up those one, that's why.
+We can directly remove here, right?
+Santhosh Kumar
+9:40 PM
+Yeah, we need to just right click that one and delete it.
+More, Prasanna
+9:40 PM
+Remove here, right?
+Can we do it here? Remove right?
+Santhosh Kumar
+9:41 PM
+Yes, yes, yes.
+More, Prasanna
+9:42 PM
+Yeah, you're good.
+Yeah, but here another other scenario 007 ERDB 1P. There are some stable one.
+Oh.
+You see here.
+ODW. These are the old one I can see.
+Santhosh Kumar
+9:43 PM
+914 years those are not cleaned properly. So can I have the storage?
+More, Prasanna
+9:43 PM
+9:40.
+Thank you.
+Yeah, I pasted here on the incident.
+Santhosh Kumar
+9:43 PM
+It is possible to location in this chat.
+More, Prasanna
+9:43 PM
+Payload Cluster manager, payload cluster can we can see I think offline one. Let me see.
+Please.
+Santhosh Kumar
+9:43 PM
+Go to the roles.
+More, Prasanna
+9:43 PM
+Rules are so partial.
+There only I can see one offline, but we need to, yeah.
+Santhosh Kumar
+9:43 PM
+Yeah, yeah, we'll see that. Can you ping me the storage land part details in this chat?
+More, Prasanna
+9:43 PM
+I.
+OK, OK, let me ping that one. I took it already.
+Oh, see.
+Santhosh Kumar
+9:43 PM
+Uh, these are more point details right? I need the one part because I mean we have.
+More, Prasanna
+9:43 PM
+Oh yeah, yeah, correct. PRDB will be here. Let let me ping you. Maybe I pasted here this one, I guess.
+Can you check it 6061?
+606162636465 This is the London. This is these are the one right London GERDP flexiclone.
+Santhosh Kumar
+9:44 PM
+Oh.
+Oh, you're actually giving me the mount point details. I need the storage length part. Do you have the source volume for this?
+Source volume or storage path details on the mount point source volume.
+More, Prasanna
+9:44 PM
+Uh.
+Uh, these are the stores where store uh.
+Santhosh Kumar
+9:44 PM
+I I mean the storage you are actually giving me the amount point. I need the storage from some source volume. We used to create A. snapshot and with that snapshot we used to create the flex load. I need the storage.
+More, Prasanna
+9:45 PM
+You get it then from the Net app, right?
+Last time, last time Sundar Sundar provided that land path from the net app.
+Santhosh Kumar
+9:45 PM
+English. Yeah, yeah, I understand.
+More, Prasanna
+9:45 PM
+Mohan Sundaram.
+I have only provided these non baths.
+Oh, one part means here I guess 6060. Is this the one? Let me do W.
+Santhosh Kumar
+9:45 PM
+It's not the none part right? I mean like the data volume.
+The lower volume. I need the lunch part. I'm asking for the lunch part. You understand what I mean.
+More, Prasanna
+9:45 PM
+Here only we can see only this one right other one where can.
+Volumes here only 6061 disk I can I can here only this part ERDB flexi clone ODW this seven right this is the this is the volume.
+Santhosh Kumar
+9:46 PM
+In the script, in the script there will be one new storage land part will be available.
+The Flex loan jobs will be there, right? The source loan used to provide that WDCPSTOSVM.
+More, Prasanna
+9:46 PM
+ERDB 1P. That's the only property. Let's say if I go the property.
+Santhosh Kumar
+9:46 PM
+Here you won't find the land details.
+More, Prasanna
+9:46 PM
+This is.
+You're selling this volume detail.
+Santhosh Kumar
+9:46 PM
+OK, leave it. I mean like let me get it from the Snapchat.
+More, Prasanna
+9:46 PM
+Yeah, snap only you would get it that one. We did not get that. We did not have an access that to look at in the snap Santosh.
+Santhosh Kumar
+9:46 PM
+You have, you have, you have access to Snap Center also. I don't remember that.
+More, Prasanna
+9:47 PM
+No, no, let me then check it because last time I connected and I did not get it. Let me.
+Santhosh Kumar
+9:47 PM
+BBT managers, I'm the one who actually target the group.
+More, Prasanna
+9:47 PM
+It can't check it. It's not A. problem to connect.
+Santhosh Kumar
+9:47 PM
+Leave it. I mean like I'm logged in.
+More, Prasanna
+9:47 PM
+Yeah, yeah, you can log in even for our side. Also we could check it. It's easily right.
+Kavitha T
+9:48 PM
+Uh, sorry to interrupt you. So Prasanna, is this for GBD?
+Santhosh Kumar
+9:48 PM
+Mm-hmm.
+More, Prasanna
+9:48 PM
+Yes.
+Kavitha T
+9:48 PM
+OK.
+More, Prasanna
+9:50 PM
+Server name that is not the server 007. Let me let me give.
+Santhosh Kumar
+9:50 PM
+007, yeah, 0077B.
+More, Prasanna
+9:50 PM
+Hmm.
+Hmm.
+Santhosh Kumar
+9:50 PM
+Yeah, DP12.
+More, Prasanna
+9:50 PM
+And.
+Let me check that 606162 correct.
+Santhosh Kumar
+9:51 PM
+6160 to 65.
+So can you, you're sharing your screen right? Can you go to the?
+More, Prasanna
+9:51 PM
+Can I shake? OK.
+Santhosh Kumar
+9:51 PM
+Oh.
+More, Prasanna
+9:51 PM
+Shall I share my screen?
+Santhosh Kumar
+9:51 PM
+Yes.
+More, Prasanna
+9:51 PM
+Yeah, I have connected a snap center as well.
+Santhosh Kumar
+9:51 PM
+Open the camera.
+What do I say?
+More, Prasanna
+9:51 PM
+Yeah, these are the ones.
+Santhosh Kumar
+9:51 PM
+Yeah, 6061, so 60 is actually map depending on the right access.
+More, Prasanna
+9:52 PM
+Go and.
+Santhosh Kumar
+9:52 PM
+Try to access it, access it again. Just open that 60.
+More, Prasanna
+9:52 PM
+OK.
+Santhosh Kumar
+9:52 PM
+Hey, sorry.
+More, Prasanna
+9:52 PM
+Yeah, there are no files, but solid care. One of the file is there, but we don't know what what is that file.
+Santhosh Kumar
+9:52 PM
+60 is actually present. If you see the space of size available on the right side, 17 terabytes something is there right? You see that size means which is the it's actually map. The folder actually why that icon is different means that I'm not sure.
+More, Prasanna
+9:52 PM
+Uh-huh.
+Oh.
+Santhosh Kumar
+9:52 PM
+But it is actually mapped. The size is actually visible for A. particular disk, particular folder that is actually mapped to the data. So 606060 and 65 is actually present.
+More, Prasanna
+9:52 PM
+OK.
+Other other one 61.
+Santhosh Kumar
+9:52 PM
+Others are present. You can open and see here.
+More, Prasanna
+9:53 PM
+These are not here, but we need to.
+Santhosh Kumar
+9:53 PM
+60 to 65 plus.
+More, Prasanna
+9:53 PM
+Yeah, the files are exist on this, but here here even failover cluster it's we can see 62.
+61.
+Santhosh Kumar
+9:53 PM
+You will see 60 also.
+More, Prasanna
+9:53 PM
+Yeah, 60 very 60616263.
+Santhosh Kumar
+9:53 PM
+Check 1 by 1.
+More, Prasanna
+9:53 PM
+60 is here. Yeah, 60 is here.
+Santhosh Kumar
+9:53 PM
+60 is there. Yeah, 60 is there. 65 is also there.
+More, Prasanna
+9:53 PM
+Yeah, yeah, not. Yeah, 6063. Yeah, maybe.
+Santhosh Kumar
+9:53 PM
+Take one by 1.
+More, Prasanna
+9:53 PM
+64 Yeah, I'm checking, but it is not ordered here.
+Santhosh Kumar
+9:53 PM
+That is.
+More, Prasanna
+9:53 PM
+Yeah, 64, but here if you go and see.
+Properties dependencies map. There are no dependencies and advanced policies also map for both. These are still existing here also. So we need to remove this but I can we can directly we cannot directly remove.
+Auto Yeah.
+Santhosh Kumar
+9:54 PM
+No, no, uh, I will not get what you want to do now. This plans are actually.
+More, Prasanna
+9:54 PM
+This whole lunch we need to remove. These are the 9/14 9/14 date lunch, right?
+Santhosh Kumar
+9:54 PM
+OK.
+Mm.
+More, Prasanna
+9:54 PM
+So we need to remove this one uh old lens.
+And there last time what he had done. Uh.
+This learn actually would learn. We can directly remove I guess.
+Santhosh Kumar
+9:54 PM
+One minute only. Thank you.
+More, Prasanna
+9:54 PM
+Yeah, remove the roll and 1st then we can go right.
+Santhosh Kumar
+9:54 PM
+Yes, yes. First actually what you do get the five disk from the failover custom manager. OK, just to modify that naming to 606162636464 so that it will be easily identified for you.
+More, Prasanna
+9:55 PM
+OK.
+But last time Harsha only Harsha only did it.
+Santhosh Kumar
+9:55 PM
+That's what I'm saying. If you do directly from the storage and that will be a stale entry again in the failover system manager. What is what I mean?
+More, Prasanna
+9:55 PM
+Oh.
+Oh.
+Santhosh Kumar
+9:55 PM
+So for best practice, first we need to remove from the role on the payload cluster manager and then I actually what we'll do, I'll unmap from the storage.
+More, Prasanna
+9:55 PM
+OK.
+OK, So what is the next step I need to do?
+Santhosh Kumar
+9:55 PM
+Yeah.
+First, actually it's find the first file and I mean these are these are one. OK, you just need A. 61 that it will be.
+More, Prasanna
+9:55 PM
+This 161. Yeah, 61.
+What I can do name?
+Santhosh Kumar
+9:55 PM
+Just right click, right click properties.
+OK.
+Santhosh Kumar
+9:56 PM
+Just name it. Just name it as 61.
+More, Prasanna
+9:56 PM
+OK.
+Santhosh Kumar
+9:56 PM
+Similarly do for the other five days. Let me get the land details for me. I'm working on the storage.
+More, Prasanna
+9:56 PM
+61 very twin 61 OK 60 OK 61.
+Santhosh Kumar
+9:56 PM
+It will be in the order.
+Or else put like A. 61 so it will be in the alphabetical order A. on the top.
+More, Prasanna
+9:56 PM
+Yeah, 61, I put it 61 and 65 I am going to put 65, OK.
+65.
+64.
+Santhosh Kumar
+9:59 PM
+OK, just validate one more time for just for confirmation. So I'm going to so you want it to be removed from the storage, am I right?
+More, Prasanna
+9:59 PM
+Just.
+Yeah, 6064.
+Yeah, 606166 text 465, yes, and enjoy.
+Yeah, 365, correct.
+Santhosh Kumar
+9:59 PM
+OK, another.
+More, Prasanna
+10:00 PM
+So where could we see this one in the tab?
+Santhosh Kumar
+10:00 PM
+You need to go to the host.
+More, Prasanna
+10:00 PM
+OK, this.
+Santhosh Kumar
+10:00 PM
+Yes, yes.
+More, Prasanna
+10:00 PM
+OK, 027.
+Santhosh Kumar
+10:00 PM
+You need to select the discount of.
+More, Prasanna
+10:00 PM
+OK.
+Santhosh Kumar
+10:00 PM
+You need to drop down the host.
+Scroll down the host on the center center page of.
+More, Prasanna
+10:00 PM
+OK.
+Santhosh Kumar
+10:00 PM
+Please select the host 7B7B.
+Since this is A. cluster disk, you need to go to 7V.
+More, Prasanna
+10:00 PM
+Oh, OK. OK.
+Santhosh Kumar
+10:00 PM
+OK, so you will have A. list of risk. So if you Scroll down to the last, you will see the plus notes.
+There is another Scroll down.
+Hold on.
+I thought that we request this question.
+In the top right corner, where you respect this?
+More, Prasanna
+10:01 PM
+Refresh, refresh this Sir.
+Santhosh Kumar
+10:01 PM
+Yeah.
+More, Prasanna
+10:01 PM
+Can I click? Shall I click that one?
+Santhosh Kumar
+10:01 PM
+Yeah, yeah, I don't talk. That's it.
+OK, simply that tool will get updated with the recent uh this information from the problem.
+For your.
+More, Prasanna
+10:01 PM
+Mhm.
+Santhosh Kumar
+10:01 PM
+So the five days, six days that you are actually asking me to, I mean asking me to clean up is the path ERDB 1P flux loan ODW SEM NPT.
+More, Prasanna
+10:01 PM
+Mm.
+Santhosh Kumar
+10:02 PM
+00606162636465 correct.
+More, Prasanna
+10:02 PM
+Correct this one.
+Santhosh Kumar
+10:02 PM
+Just for confirmation.
+More, Prasanna
+10:02 PM
+I pinged you again if you have.
+Already pinged you, but again.
+Santhosh Kumar
+10:02 PM
+OK, OK, OK, let me know. OK, no fine. That's fine. I mean, I'll take it.
+More, Prasanna
+10:02 PM
+OK.
+Santhosh Kumar
+10:02 PM
+Once this update has been completed, just Scroll down to the last. You'll see the plus down disk.
+More, Prasanna
+10:02 PM
+So.
+OK.
+Santhosh Kumar
+10:02 PM
+Taking time.
+Yeah, now scroll down.
+You see it right? I mean like 63.
+Just little roll up.
+Yeah.
+Yeah, yeah, hold on. You see you're right, 62, 64. So these are actually map, 61, 62, yeah.
+More, Prasanna
+10:03 PM
+This one 60, Yeah, 60.
+Santhosh Kumar
+10:03 PM
+Just the latest map.
+More, Prasanna
+10:03 PM
+Yeah, 61, Yeah, 8914, Yeah, 9/14.
+Santhosh Kumar
+10:03 PM
+So these are the more points
+More, Prasanna
+10:04 PM
+When you're deleting from there directly, can delete.
+Santhosh Kumar
+10:04 PM
+It will go away, but The thing is first you need to remove that Pi disk. I mean these are the proper cleanup. OK, we don't want to so just delete that particular remove that particular disk for that particular disk.
+More, Prasanna
+10:04 PM
+OK.
+Rolla.
+Remove from SQL, right?
+Santhosh Kumar
+10:04 PM
+Yes.
+More, Prasanna
+10:04 PM
+Yes.
+Oh, everything is start. Oh, everything it went up.
+Santhosh Kumar
+10:04 PM
+There will be some kind of no, no, there will be some kind of dependency. Move it back to role.
+More, Prasanna
+10:04 PM
+It's restarted I guess.
+Santhosh Kumar
+10:04 PM
+Assigned to role, just more actions.
+More, Prasanna
+10:04 PM
+Oh, OK.
+Santhosh Kumar
+10:04 PM
+No, no.
+You just select all.
+More, Prasanna
+10:05 PM
+It it restarted.
+Santhosh Kumar
+10:05 PM
+No, no.
+Select all time to roll.
+More, Prasanna
+10:05 PM
+Which one?
+Yeah.
+Santhosh Kumar
+10:05 PM
+Selected this.
+Assign to club.
+More, Prasanna
+10:05 PM
+I don't know which one I'd add to clustered shared values.
+It is restarted I guess.
+Santhosh Kumar
+10:05 PM
+How do you assign the disk to the role?
+Roll.
+The failure of cluster manager is to get A. new disk.
+You just click Escape, Remove.
+More, Prasanna
+10:05 PM
+No, we can you. We did not see the assigned roles. All the restarted happened. System restarted actually.
+Santhosh Kumar
+10:05 PM
+Yes.
+You.
+Maybe the dependency are still exists on that particular disk. That's why it's restarted.
+More, Prasanna
+10:05 PM
+Yeah, we need to remove the dependencies first, but we need to assign first, right?
+Santhosh Kumar
+10:06 PM
+Oh.
+Yeah, yeah, that's what. That's what I'm saying. Click on any one disk. Click on any one disk. Click on any one disk.
+More, Prasanna
+10:06 PM
+Where can I go?
+OK.
+I selected.
+Santhosh Kumar
+10:06 PM
+On the right side, on the right side.
+More accent.
+More, Prasanna
+10:06 PM
+Add disk.
+Santhosh Kumar
+10:06 PM
+Oh no, add this.
+More, Prasanna
+10:06 PM
+Yeah, you can.
+Santhosh Kumar
+10:07 PM
+What is the server?
+Chennai R7 DC04CWC.
+SQL 007 BR.
+More, Prasanna
+10:07 PM
+Mm.
+Santhosh Kumar
+10:07 PM
+Let me log into it. Just two minutes. Let me push you.
+OK.
+More, Prasanna
+10:08 PM
+You're the server, OK?
+We need to move the tip, move the dependencies.
+Santhosh Kumar
+10:08 PM
+Oh, no, no, no.
+Right now.
+More, Prasanna
+10:09 PM
+Yeah, it's came up.
+So what? What are the action you are going to put dependencies? We need to remove the dependencies.
+Santhosh Kumar
+10:09 PM
+You need to remove the dependencies on the 1st at 5 disk first and let's first finish this partial running error. One offline disk is error that 7B. Do you know any idea about that one?
+More, Prasanna
+10:09 PM
+OK.
+Hmm.
+Yeah, we do not know this is happened. I don't know when this happened. Also we did not know.
+Santhosh Kumar
+10:09 PM
+OK.
+More, Prasanna
+10:10 PM
+You have removed.
+Santhosh Kumar
+10:10 PM
+Yes, now it is running ERDB. Can you check the roles? Can you check the roles? Can you click the role and see?
+More, Prasanna
+10:10 PM
+OK.
+Hmm.
+And.
+Santhosh Kumar
+10:10 PM
+OK, so always make sure if any offline disk is there and it is assigned to any particular particular instance role, the instance will be in partial running state OK because it is trying to connect to some offline disk that offline disk is not person so it will be in.
+OK.
+More, Prasanna
+10:10 PM
+Hmm.
+Santhosh Kumar
+10:10 PM
+I just removed it. OK, now you go and remove the dependencies for the disk that you want to unmap from the storage 6265.
+More, Prasanna
+10:10 PM
+Yeah.
+And.
+There is no dependencies here.
+Santhosh Kumar
+10:10 PM
+No, that disk is there, right? That basically disk is here.
+More, Prasanna
+10:10 PM
+Dependency is already there, right? So how can OK?
+More action, more action.
+More actions show dependency report. It's not showing any dependency reports. OK system we need to remove I guess.
+Property.
+Santhosh Kumar
+10:11 PM
+Yeah.
+More, Prasanna
+10:11 PM
+But there is no dependency.
+Santhosh Kumar
+10:11 PM
+OK.
+OK, try to try to remove that from the roll. Try to remove that 60 days from the roll.
+More, Prasanna
+10:11 PM
+There is no dependence.
+I think we need to put offline or after removing we need to put offline.
+Just I tried to remove this one right so but it went it went all the roles are down.
+Santhosh Kumar
+10:11 PM
+I mean, let's try one more.
+More, Prasanna
+10:11 PM
+OK, can you share your screen when you're doing?
+No, when you when when I do this one.
+Santhosh Kumar
+10:11 PM
+You want me? You want me to do it?
+More, Prasanna
+10:12 PM
+No, usually what? Let me try other one. I'll check it. There is any dependencies here. There is no dependencies, right?
+How can we remove the dependencies if it is not there? Put the putting this search to be offline. Yeah if you yeah it is it is going. We need to put the offline I guess.
+First we need to put offline, then we need to remove.
+Directly we cannot remove.
+Santhosh Kumar
+10:12 PM
+OK.
+More, Prasanna
+10:12 PM
+So again, can you bring back that one? Put all these disks to be offline.
+Santhosh Kumar
+10:12 PM
+Yeah, yeah, one more.
+More, Prasanna
+10:12 PM
+Then yeah.
+I will make dots.
+Santhosh Kumar
+10:13 PM
+See these things actually you only well known about this because we storage thing doesn't do this.
+More, Prasanna
+10:13 PM
+We cannot like, no, no, no. What is this Santosh? Here it's showing those disks in stale disks, right? So that we cannot remove.
+Santhosh Kumar
+10:13 PM
+That's we can actually remove the failure of customer manager information. I mean your failure is more compared to us.
+More, Prasanna
+10:13 PM
+OK, first we need to put this offline. You need to do all but Mohan last time he did from.
+Somewhere it went from event cluster.
+Santhosh Kumar
+10:13 PM
+You see, I can I stand the little directly. The thing is if I do it.
+More, Prasanna
+10:13 PM
+OK.
+Yeah, again, it will come up.
+Santhosh Kumar
+10:13 PM
+OK, let's take off. You want me to can I see?
+More, Prasanna
+10:13 PM
+OK.
+No, no. OK. Can you share your screen?
+Santhosh Kumar
+10:13 PM
+Yes.
+More, Prasanna
+10:14 PM
+I think you need to.
+60 to 65 take off line.
+What you're saying this is A. proper way. If we do like this then it it won't come again, right? That's what you're.
+Offline. I think it was offline.
+Mhm.
+We need to remove from the no, no, no, remove from, remove from this. Yeah, one by one you can do it, yeah.
+Yes, I'm good.
+More, Prasanna
+10:16 PM
+Yeah, one by one, do it one by one, like.
+Santhosh Kumar
+10:16 PM
+Yeah.
+More, Prasanna
+10:16 PM
+Mhm.
+Santhosh Kumar
+10:16 PM
+Oh.
+OK.
+More, Prasanna
+10:16 PM
+Hmm.
+Santhosh Kumar
+10:16 PM
+OK.
+More, Prasanna
+10:16 PM
+Mm.
+Santhosh Kumar
+10:17 PM
+Yeah.
+More, Prasanna
+10:17 PM
+And make sure all the 6162 everything.
+Santhosh Kumar
+10:17 PM
+Yeah, yeah.
+More, Prasanna
+10:17 PM
+6061.
+Santhosh Kumar
+10:17 PM
+OK.
+More, Prasanna
+10:17 PM
+6360.
+Santhosh Kumar
+10:17 PM
+I only captured the details.
+More, Prasanna
+10:18 PM
+The date date also it's showing 940.
+Santhosh Kumar
+10:24 PM
+So now the size is not showing 60 to 65, which means we have.
+More, Prasanna
+10:24 PM
+OK.
+Hmm. Yeah, I'm very.
+Santhosh Kumar
+10:24 PM
+OK.
+You know.
+More, Prasanna
+10:25 PM
+Refresh it, then it goes like this, right?
+Oh.
+Santhosh Kumar
+10:25 PM
+Mhm.
+More, Prasanna
+10:25 PM
+I think from NetApp said he removed from there only it will go I guess.
+Santhosh Kumar
+10:25 PM
+No family attack to remove this interval not of people.
+Uh, the thing that you're saying is actually removed from the snap center.
+More, Prasanna
+10:25 PM
+Oh, OK.
+Santhosh Kumar
+10:25 PM
+Oh.
+More, Prasanna
+10:25 PM
+Refresh it if it is going or not.
+Santhosh Kumar
+10:25 PM
+Yeah, yeah.
+OK.
+OK.
+More, Prasanna
+10:26 PM
+Oh, so hard.
+Oh, it went away. OK.
+I think we are good.
+Yeah, can we do another server also?
+Santhosh Kumar
+10:26 PM
+So.
+More, Prasanna
+10:26 PM
+Uh, other one is here.
+LDB be completed and well 13 B.
+I'm being here. Same, same.
+13 B.
+Santhosh Kumar
+10:27 PM
+So.
+More, Prasanna
+10:27 PM
+I've been here.
+Santhosh Kumar
+10:27 PM
+Mohan would have taken lot of time, right? I mean, you know this.
+More, Prasanna
+10:27 PM
+Oh, sorry, Santhosh. Yeah, it it did not.
+Santhosh Kumar
+10:27 PM
+When Mohan if he did it, it took it took some more time because each and every day when you have to go and move it from the store snap center to take.
+Big time move because the manual process is not required there.
+More, Prasanna
+10:28 PM
+OK.
+Uh, since it is showing 4 lengths of line, uh, those are the one correct one. We don't know.
+13A I guess 13 A.
+Santhosh Kumar
+10:28 PM
+No, no 13V only.
+More, Prasanna
+10:28 PM
+So.
+Santhosh Kumar
+10:28 PM
+Can you?
+More, Prasanna
+10:28 PM
+Thank you.
+Can you share?
+Santhosh Kumar
+10:28 PM
+To see next year.
+Yeah, I'm sharing this thing. Oh, you're not seeing this thing.
+More, Prasanna
+10:28 PM
+Twenty-five to 30.
+Santhosh Kumar
+10:28 PM
+225.
+More, Prasanna
+10:28 PM
+Yeah, sorry, twenty-five to thirty-five.
+Santhosh Kumar
+10:28 PM
+225-226, 27, 28, 29 and 30.
+More, Prasanna
+10:29 PM
+Uh, yeah, 225 to sorry, 225 to 230.
+Yeah, 2930.
+Santhosh Kumar
+10:29 PM
+OK.
+More, Prasanna
+10:29 PM
+Yes, correct. Correct. What date it is actually 10/3? Yeah.
+All of the.
+Santhosh Kumar
+10:29 PM
+Which server the bone points presently reciting?
+More, Prasanna
+10:29 PM
+Server.
+13 I can see now is in 13 A. It might be fail over I guess.
+Now I can see the lunch on 13 A.
+Santhosh Kumar
+10:30 PM
+DWA 2P.
+More, Prasanna
+10:30 PM
+Hmm.
+Santhosh Kumar
+10:30 PM
+Yeah.
+More, Prasanna
+10:30 PM
+10/3.
+Santhosh Kumar
+10:30 PM
+In this.
+More, Prasanna
+10:30 PM
+Sorry.
+Santhosh Kumar
+10:30 PM
+Do you have anyone intel in this call?
+More, Prasanna
+10:31 PM
+I think Suraj or some detender, he's there.
+Santhosh Kumar
+10:31 PM
+This offline disk are in available storage. I think there's no disk. Yeah, you see right this offline disk are in available storage.
+More, Prasanna
+10:31 PM
+You can.
+OK.
+Santhosh Kumar
+10:31 PM
+So that's why here the instance is not actually in partial running state.
+More, Prasanna
+10:31 PM
+Hmm.
+Santhosh Kumar
+10:31 PM
+But in the previous scenarios for the other two servers, it was in partial running because the offline disk are in the assigned role. Got it.
+More, Prasanna
+10:31 PM
+Hmm.
+Assigned to DW2P, so that's why, yeah.
+Santhosh Kumar
+10:31 PM
+It does.
+So can I remove this?
+More, Prasanna
+10:32 PM
+Oh, yes, you can.
+Santhosh Kumar
+10:32 PM
+So what are the tasks?
+More, Prasanna
+10:32 PM
+225 We need 225. Yeah, this is the one 225.
+27.
+26.
+Santhosh Kumar
+10:32 PM
+See, whatever I'm doing is actually manual process, OK?
+More, Prasanna
+10:32 PM
+Hello.
+Um.
+Santhosh Kumar
+10:32 PM
+Anyone much aware of it, they can actually do it.
+More, Prasanna
+10:32 PM
+Oh.
+OK.
+It has to go by through net type only usually right? That's why that function is not working.
+Santhosh Kumar
+10:33 PM
+If not, I won't recommend this.
+Yes, yes.
+More, Prasanna
+10:33 PM
+No, not that.
+Santhosh Kumar
+10:33 PM
+I'm just checking.
+More, Prasanna
+10:33 PM
+Uh, that is 2.8 is 14 is 2.8.
+15 is 229.
+Yeah, that is 3230s.
+Santhosh Kumar
+10:34 PM
+Yeah, yeah, I got it.
+More, Prasanna
+10:34 PM
+It.
+No, that is.
+Santhosh Kumar
+10:34 PM
+25 right? First one.
+More, Prasanna
+10:34 PM
+Yeah, 25225.
+I think we need to remove the first offline and then we need to.
+Kavitha T
+10:35 PM
+Answer.
+Santhosh Kumar
+10:35 PM
+Um, I'm doing directly from the storage now.
+More, Prasanna
+10:35 PM
+Does it affect anything? I'll check.
+Santhosh Kumar
+10:35 PM
+Yeah, that.
+You don't see the 225 year.
+More, Prasanna
+10:35 PM
+OK.
+Santhosh Kumar
+10:35 PM
+But actually that will take some time.
+More, Prasanna
+10:35 PM
+OK.
+So last time he did that way.
+Santhosh Kumar
+10:35 PM
+What we actually no one would have done but the problem here is I mean not the problem this is the right way but if you could not able to see the clone disk here with this tool.
+More, Prasanna
+10:35 PM
+Yeah.
+Mm.
+Santhosh Kumar
+10:35 PM
+You need to do the manual process. You got it?
+More, Prasanna
+10:35 PM
+Mm.
+Santhosh Kumar
+10:35 PM
+Now we can able to see the clone disk that has mapped everything. But in some scenarios previously when we were we found the folders were there but the mount was not present. Remember you work with NetApp. In that scenario we need to manually remove those nulls.
+More, Prasanna
+10:36 PM
+Mm mm.
+Santhosh Kumar
+10:36 PM
+That is the only way.
+More, Prasanna
+10:36 PM
+Hmm.
+Santhosh Kumar
+10:36 PM
+That is actually improper cleanup. So you need to go and uh.
+More, Prasanna
+10:36 PM
+But.
+That is A. before you did that one is the proper cleanup I it we did not get again no.
+Santhosh Kumar
+10:36 PM
+No, I yeah, I mean like whenever you see some offline disk in the payload system and you go and I mean just check with the NetApp team. No, no, not every day. I mean like just check with things with some NetApp because.
+More, Prasanna
+10:36 PM
+Yeah.
+Every day.
+Santhosh Kumar
+10:36 PM
+We were available in shift or send out an e-mail asking for like do you find any offline disk for this particular offline disk or unmapped disk mapped to this particular server from the storage.
+More, Prasanna
+10:36 PM
+Santosh, we do not have their direct e-mail, so we are contacting between A. NAS team, right? So that is the main issue. They're not even.
+Santhosh Kumar
+10:37 PM
+No, no, we are a nice team, right? You can send out an e-mail. You have a team e-mail ID.
+More, Prasanna
+10:37 PM
+The Can you ping the Netapp team e-mail ID? We are we are oh your last team.
+Santhosh Kumar
+10:37 PM
+Not I'm asking our team, our team, yes, we just send out on e-mail alone like asking do you see any unmapped or offline disk on the particular if the team confirms like no, there is no any offline disk.
+More, Prasanna
+10:37 PM
+Mm.
+Hmm.
+Santhosh Kumar
+10:37 PM
+I mean offline disk assigned to this particular server. You can 100% sure there is no offline disk map and then you can go and remove that offline entry from the fellow cluster management. You got it?
+More, Prasanna
+10:37 PM
+Um.
+Hmm. I think this is the good, good way we need to move.
+Yeah, correct.
+Santhosh Kumar
+10:37 PM
+Avoid lot of.
+More, Prasanna
+10:37 PM
+Lot of I'll I'll monitor because I'm the POC here, so I'll monitor and I'll send an e-mail. That way it will work out actually.
+Santhosh Kumar
+10:37 PM
+OK.
+So time by time we can actually do the clean up. I hope you understand and also this will avoid the partial running state of this SQL slot of.
+More, Prasanna
+10:38 PM
+Yeah, correct.
+Mm.
+You deleted 2626 year.
+Kavitha T
+10:38 PM
+From Haiti.
+More, Prasanna
+10:38 PM
+Yeah.
+Kavitha T
+10:38 PM
+Hiking solitaire. So may I know the latest update here?
+Yes, I'm not going to appreciate.
+More, Prasanna
+10:38 PM
+Yeah, yeah, actually NAS team is cleaning up. Still we are in the process. We need after this completing, we need to go for another server, PDS one server. So we are in process.
+Santhosh Kumar
+10:39 PM
+How service you are working today?
+More, Prasanna
+10:39 PM
+Sorry, Santosh.
+Santhosh Kumar
+10:39 PM
+How many servers?
+More, Prasanna
+10:39 PM
+There is one more after this.
+Santhosh Kumar
+10:39 PM
+OK.
+More, Prasanna
+10:39 PM
+I I meant.
+Kavitha T
+10:39 PM
+Is it clean on 6B and 7B?
+More, Prasanna
+10:39 PM
+Yeah.
+Santhosh Kumar
+10:39 PM
+Six and seven computer.
+Kavitha T
+10:39 PM
+OK.
+More, Prasanna
+10:39 PM
+Santosh, you are doing again 914 one.
+Which one you're doing? 616465 already done, right? That one.
+Santhosh Kumar
+10:39 PM
+This is I'm cleaning from from the storage.
+More, Prasanna
+10:39 PM
+Oh.
+Kavitha T
+10:39 PM
+OK.
+Santhosh Kumar
+10:39 PM
+Because we did it, my love.
+More, Prasanna
+10:40 PM
+Mm-hmm.
+Santhosh Kumar
+10:40 PM
+I already make a note of it. Once this is running, I'm just doing the cleanup. No harm, don't worry.
+More, Prasanna
+10:40 PM
+OK, OK. Yeah, if it is anything goes offline again, we need to sit down whole night.
+Santhosh Kumar
+10:40 PM
+And.
+No, no, no, no. This is already you see the command. Actually it's already of unmapped disk. I'm doing that. I'm cleaning up the unmapped one, not the mapped one you see on top, right?
+More, Prasanna
+10:40 PM
+Yeah.
+Yeah.
+We need to finish this one. I think this job will start at 11 here.
+Santhosh Kumar
+10:40 PM
+We can finish talking.
+More, Prasanna
+10:40 PM
+Yeah.
+It completed DW2P all of them.
+DW2 there are some more right?
+Santhosh Kumar
+10:40 PM
+Yeah, yeah, some more are there.
+More, Prasanna
+10:40 PM
+Yeah, 26 year, 27282930.
+Santhosh Kumar
+10:40 PM
+OK.
+More, Prasanna
+10:41 PM
+Can you cleaning up or you?
+Sorry.
+Santhosh Kumar
+10:41 PM
+Yeah.
+400.
+Kavitha T
+10:41 PM
+2.
+Santhosh Kumar
+10:41 PM
+227 I'm actually deleting it.
+More, Prasanna
+10:41 PM
+Hmm.
+Kavitha T
+10:41 PM
+Uh.
+Santhosh Kumar
+10:41 PM
+Mm.
+227, let's see what is happening outline.
+OK.
+More, Prasanna
+10:42 PM
+One by one, go one by one. It is story.
+Yeah.
+No.
+Santhosh Kumar
+10:43 PM
+No, I do. It's A. huge size, though, to change the hours, so it's getting time to.

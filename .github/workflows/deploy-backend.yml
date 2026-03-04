@@ -1,0 +1,109 @@
+# ============================================
+# Deploy Backend to Azure Container Apps
+# ============================================
+# WHY: Automatically builds and deploys the backend when changes
+# are merged to main. Uses Docker multi-stage build, pushes to ACR,
+# and updates the Container App with rolling deployment.
+#
+# TRIGGER: Push to main when backend/ files change.
+# SAFETY: Concurrency group prevents simultaneous deployments.
+#         Health check verifies the new version is serving traffic.
+
+name: Deploy Backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/deploy-backend.yml"
+
+# Prevent simultaneous backend deployments (let running deploys finish)
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build & Deploy Backend
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to ACR
+        uses: azure/docker-login@v2
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE=${{ secrets.ACR_LOGIN_SERVER }}/healthcare-ops-backend
+          SHA_TAG=${GITHUB_SHA::7}
+
+          echo "Building image: ${IMAGE}:${SHA_TAG}"
+          docker build \
+            -t ${IMAGE}:${SHA_TAG} \
+            -t ${IMAGE}:latest \
+            ./backend
+
+          echo "Pushing to ACR..."
+          docker push ${IMAGE}:${SHA_TAG}
+          docker push ${IMAGE}:latest
+
+          echo "IMAGE_TAG=${SHA_TAG}" >> $GITHUB_ENV
+          echo "FULL_IMAGE=${IMAGE}:${SHA_TAG}" >> $GITHUB_ENV
+
+      - name: Deploy to Azure Container App
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          resourceGroup: ${{ secrets.RESOURCE_GROUP }}
+          containerAppName: ${{ secrets.CONTAINER_APP_NAME }}
+          imageToDeploy: ${{ env.FULL_IMAGE }}
+
+      - name: Wait for rollout
+        run: |
+          echo "Waiting 30s for new revision to start..."
+          sleep 30
+
+      - name: Health check
+        run: |
+          HEALTH_URL="https://healthcare-ops.livelypebble-70fe60f2.eastus2.azurecontainerapps.io/api/health"
+          echo "Checking health at: ${HEALTH_URL}"
+
+          for i in $(seq 1 10); do
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${HEALTH_URL}" || true)
+            echo "Attempt ${i}/10: HTTP ${HTTP_STATUS}"
+
+            if [ "${HTTP_STATUS}" = "200" ]; then
+              echo "Health check passed!"
+              RESPONSE=$(curl -s "${HEALTH_URL}")
+              echo "Response: ${RESPONSE}"
+              exit 0
+            fi
+
+            echo "Retrying in 15s..."
+            sleep 15
+          done
+
+          echo "::error::Health check failed after 10 attempts"
+          exit 1
+
+      - name: Deployment summary
+        if: success()
+        run: |
+          echo "### Backend Deployment Successful :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Image** | \`${{ env.FULL_IMAGE }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${GITHUB_SHA::7}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Health** | https://healthcare-ops.livelypebble-70fe60f2.eastus2.azurecontainerapps.io/api/health |" >> $GITHUB_STEP_SUMMARY
