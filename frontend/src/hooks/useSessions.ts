@@ -26,7 +26,9 @@ export function useSessions(): UseSessionsReturn {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const sessionsRef = useRef(sessions);
-  sessionsRef.current = sessions;
+  useEffect(() => {
+    sessionsRef.current = sessions;
+  }, [sessions]);
 
   // Load from localStorage on mount
   useEffect(() => {
