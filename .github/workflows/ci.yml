@@ -52,7 +52,17 @@ jobs:
       - name: Run unit tests
         run: |
           cd backend
+          set +e
           pytest tests/unit/ -v --tb=short --no-header
+          rc=$?
+          set -e
+          # Exit code 5 = "no tests collected" (empty test dirs).
+          # Treat it as success so CI passes while tests are being written.
+          if [ $rc -eq 5 ]; then
+            echo "⚠ No tests collected — skipping. Add tests to backend/tests/unit/."
+            exit 0
+          fi
+          exit $rc
 
   # ========================================
   # Frontend: Lint + Build
