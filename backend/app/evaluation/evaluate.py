@@ -179,7 +179,9 @@ def run_ragas_evaluation(samples: list[dict]) -> dict:
         # on the version and config. Handle both cases.
         def _to_float(val):
             if isinstance(val, list):
-                return sum(v for v in val if v is not None) / max(len([v for v in val if v is not None]), 1)
+                return sum(v for v in val if v is not None) / max(
+                    len([v for v in val if v is not None]), 1
+                )
             return float(val)
 
         scores = {
