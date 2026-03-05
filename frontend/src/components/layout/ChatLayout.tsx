@@ -38,7 +38,9 @@ export function ChatLayout() {
 
   // Persist messages to localStorage (does NOT trigger React state loop)
   const sessionIdRef = useRef(sessionId);
-  sessionIdRef.current = sessionId;
+  useEffect(() => {
+    sessionIdRef.current = sessionId;
+  }, [sessionId]);
   const lastPersistedRef = useRef<ChatMessage[] | null>(null);
 
   useEffect(() => {
@@ -63,8 +65,7 @@ export function ChatLayout() {
         const loaded = sessionData.messages.map((m) => ({
           ...m,
           timestamp: new Date(m.timestamp),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        })) as any;
+        })) as unknown as ChatMessage[];
         lastPersistedRef.current = loaded; // mark so persist effect skips this
         setMessages(loaded);
       } else {

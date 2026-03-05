@@ -175,11 +175,18 @@ def run_ragas_evaluation(samples: list[dict]) -> dict:
             embeddings=azure_embeddings,
         )
 
+        # RAGAS may return per-sample lists or aggregated floats depending
+        # on the version and config. Handle both cases.
+        def _to_float(val):
+            if isinstance(val, list):
+                return sum(v for v in val if v is not None) / max(len([v for v in val if v is not None]), 1)
+            return float(val)
+
         scores = {
-            "faithfulness": float(result["faithfulness"]),
-            "answer_relevancy": float(result["answer_relevancy"]),
-            "context_precision": float(result["context_precision"]),
-            "context_recall": float(result["context_recall"]),
+            "faithfulness": _to_float(result["faithfulness"]),
+            "answer_relevancy": _to_float(result["answer_relevancy"]),
+            "context_precision": _to_float(result["context_precision"]),
+            "context_recall": _to_float(result["context_recall"]),
         }
 
         logger.info(f"RAGAS evaluation results: {scores}")
