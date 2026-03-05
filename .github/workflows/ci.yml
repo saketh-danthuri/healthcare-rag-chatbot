@@ -20,6 +20,11 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Permissions needed for PR comments (RAG Quality Gate posts results)
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   # ========================================
   # Backend: Lint + Unit Tests

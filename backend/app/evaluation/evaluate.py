@@ -131,6 +131,7 @@ def run_ragas_evaluation(samples: list[dict]) -> dict:
     """
     try:
         from datasets import Dataset
+        from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
         from ragas import evaluate
         from ragas.metrics import (
             answer_relevancy,
@@ -139,10 +140,29 @@ def run_ragas_evaluation(samples: list[dict]) -> dict:
             faithfulness,
         )
 
+        settings = get_settings()
+
+        # RAGAS needs an LLM and embeddings for computing metrics.
+        # Without these, it defaults to llm_factory() which tries standard
+        # OpenAI (not Azure) and fails with OPENAI_API_KEY missing.
+        azure_llm = AzureChatOpenAI(
+            azure_endpoint=settings.azure_openai_endpoint,
+            api_key=settings.azure_openai_api_key,
+            api_version=settings.azure_openai_api_version,
+            azure_deployment=settings.azure_openai_chat_deployment,
+            temperature=0,
+        )
+        azure_embeddings = AzureOpenAIEmbeddings(
+            azure_endpoint=settings.azure_openai_endpoint,
+            api_key=settings.azure_openai_api_key,
+            api_version=settings.azure_openai_api_version,
+            azure_deployment=settings.azure_openai_embedding_deployment,
+        )
+
         # Convert to HuggingFace Dataset format (required by RAGAS)
         dataset = Dataset.from_list(samples)
 
-        # Run evaluation
+        # Run evaluation with explicit Azure OpenAI LLM and embeddings
         result = evaluate(
             dataset=dataset,
             metrics=[
@@ -151,6 +171,8 @@ def run_ragas_evaluation(samples: list[dict]) -> dict:
                 context_precision,
                 context_recall,
             ],
+            llm=azure_llm,
+            embeddings=azure_embeddings,
         )
 
         scores = {
