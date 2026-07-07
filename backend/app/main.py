@@ -19,6 +19,7 @@ WHAT IT DOES PER REQUEST:
 
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -50,23 +51,73 @@ async def lifespan(app: FastAPI):
     logger.info("Starting Healthcare RAG Chatbot...")
     settings = get_settings()
     logger.info(f"Docs path: {settings.docs_base_path}")
-    logger.info(f"Azure OpenAI endpoint: {settings.azure_openai_endpoint[:30]}...")
-    logger.info(f"Azure AI Search endpoint: {settings.azure_search_endpoint}")
+    logger.info(
+        f"LLM (Ollama): {settings.ollama_base_url} model={settings.ollama_chat_model}"
+    )
+    logger.info(f"Vector store (Chroma): {settings.chroma_persist_dir}")
 
-    # Quick Azure AI Search connectivity check (non-blocking)
+    # Create uploads directory for meeting transcript uploads
+    upload_dir = Path(settings.upload_dir)
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    logger.info(f"Upload directory: {upload_dir}")
+
+    # --- Memory layer: durable agent checkpointer + interactions store ---
+    # Open the shared psycopg pool, set up the LangGraph Postgres checkpointer
+    # and the agent_memory schema, then compile the agent graph against it. If
+    # Postgres is unreachable, fall back to an in-memory checkpointer so the app
+    # still runs (degraded: conversations won't persist across restarts).
+    from app.agent.graph import init_agent, init_agent_in_memory
+
     try:
-        from app.ingestion.embedder import get_search_client
+        from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
-        search_client = get_search_client()
-        results = search_client.search(search_text="*", top=0, include_total_count=True)
-        doc_count = results.get_count() or 0
-        logger.info(f"Azure AI Search connected - {doc_count} documents indexed")
+        from app.persistence.pool import apply_schema, open_pool
+
+        pool = await open_pool()
+        checkpointer = AsyncPostgresSaver(pool)
+        await checkpointer.setup()  # idempotent; creates checkpoint tables
+        await apply_schema()  # idempotent; creates agent_memory tables
+        init_agent(checkpointer)
+        app.state.memory_pool = pool
+        logger.info("Memory layer initialized (Postgres checkpointer + store)")
     except Exception as e:
         logger.warning(
-            f"Could not connect to Azure AI Search at startup: {e}. "
-            "Will attempt to connect on first request. "
-            "Run POST /api/ingest to populate the search index."
+            f"Could not initialize Postgres memory layer: {e}. "
+            "Falling back to in-memory checkpointer (no durable persistence)."
         )
+        app.state.memory_pool = None
+        init_agent_in_memory()
+
+    # Quick local vector-store check (non-blocking)
+    try:
+        from app.retrieval.vector_store import count_documents
+
+        doc_count = count_documents()
+        logger.info(f"ChromaDB connected - {doc_count} document chunks indexed")
+        if doc_count == 0:
+            logger.warning(
+                "Vector store is empty. Run `python scripts/ingest_local.py` "
+                "or POST /api/ingest to index the Docs/ folder."
+            )
+    except Exception as e:
+        logger.warning(f"Could not open ChromaDB at startup: {e}")
+
+    # Initialize guardrails pipeline at startup to warm up ML models
+    # (spaCy for PHI masking, sentence-transformers for topic filter).
+    # Doing this here prevents cold-start latency on the first user request.
+    try:
+        from app.guardrails import get_guardrails_pipeline
+
+        get_guardrails_pipeline()
+        logger.info("Guardrails pipeline initialized successfully")
+
+        # Warm the output masker (reuses the pipeline's already-loaded spaCy
+        # model) so streamed-response PHI masking has no cold start.
+        from app.guardrails.output_masker import get_output_masker
+
+        get_output_masker()
+    except Exception as e:
+        logger.warning(f"Guardrails pipeline initialization warning: {e}")
 
     # Set up monitoring if configured
     if settings.applicationinsights_connection_string:
@@ -82,6 +133,10 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     logger.info("Shutting down Healthcare RAG Chatbot...")
+    if getattr(app.state, "memory_pool", None) is not None:
+        from app.persistence.pool import close_pool
+
+        await close_pool()
 
 
 # Create the FastAPI app

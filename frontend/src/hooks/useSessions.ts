@@ -18,6 +18,7 @@ interface UseSessionsReturn {
   createSession: () => ChatSession;
   switchSession: (id: string) => void;
   deleteSession: (id: string) => void;
+  renameSession: (id: string, title: string) => void;
   /** Save messages to localStorage directly (no React state loop). */
   persistMessages: (sessionId: string, messages: ChatMessage[]) => void;
 }
@@ -61,7 +62,12 @@ export function useSessions(): UseSessionsReturn {
       const merged = sessions.map((s) => {
         const existing = storedMap.get(s.id);
         return existing
-          ? { ...existing, title: s.title, createdAt: s.createdAt }
+          ? {
+              ...existing,
+              title: s.title,
+              createdAt: s.createdAt,
+              titleCustom: s.titleCustom,
+            }
           : s;
       });
       saveSessions(merged);
@@ -90,6 +96,24 @@ export function useSessions(): UseSessionsReturn {
 
   const switchSession = useCallback((id: string) => {
     setActiveId(id);
+  }, []);
+
+  const renameSession = useCallback((id: string, title: string) => {
+    const trimmed = title.trim();
+    if (!trimmed) return;
+    // Update React state (marks the session as custom-titled).
+    setSessions((prev) =>
+      prev.map((s) =>
+        s.id === id ? { ...s, title: trimmed, titleCustom: true } : s,
+      ),
+    );
+    // Persist to localStorage immediately so it survives a reload.
+    const stored = loadSessions();
+    saveSessions(
+      stored.map((s) =>
+        s.id === id ? { ...s, title: trimmed, titleCustom: true } : s,
+      ),
+    );
   }, []);
 
   const deleteSession = useCallback(
@@ -126,10 +150,13 @@ export function useSessions(): UseSessionsReturn {
     (sessionId: string, messages: ChatMessage[]) => {
       // 1. Save full messages to localStorage directly
       const stored = loadSessions();
+      const isCustom = !!stored.find((s) => s.id === sessionId)?.titleCustom;
       const firstUserMsg = messages.find((m) => m.role === "user");
-      const newTitle = firstUserMsg
-        ? deriveSessionTitle(firstUserMsg.content)
-        : undefined;
+      // A manually-renamed session keeps its title — never auto-derive over it.
+      const newTitle =
+        !isCustom && firstUserMsg
+          ? deriveSessionTitle(firstUserMsg.content)
+          : undefined;
 
       const updated = stored.map((s) => {
         if (s.id !== sessionId) return s;
@@ -160,6 +187,7 @@ export function useSessions(): UseSessionsReturn {
     createSession,
     switchSession,
     deleteSession,
+    renameSession,
     persistMessages,
   };
 }

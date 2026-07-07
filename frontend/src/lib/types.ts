@@ -12,7 +12,14 @@ export interface Citation {
   page_number: string | number;
   score: number;
   snippet: string;
+  /** True if this source was actually retrieved (grounding check). */
+  verified?: boolean;
+  /** True if the answer's text actually referenced this source's [Source N]. */
+  cited?: boolean;
 }
+
+// --- Permission role governing PHI reveal on assistant output ---
+export type UserRole = "clinician" | "general";
 
 // --- Pending Action (from graph.py - agent proposes action needing approval) ---
 export interface PendingAction {
@@ -28,6 +35,12 @@ export interface ActionResult {
   result?: Record<string, unknown>;
 }
 
+// --- Attached File (from /api/upload) ---
+export interface AttachedFile {
+  file_id: string;
+  filename: string;
+}
+
 // --- Chat Message (frontend display model) ---
 export interface ChatMessage {
   id: string;
@@ -37,6 +50,11 @@ export interface ChatMessage {
   citations?: Citation[];
   pendingAction?: PendingAction;
   actionResult?: ActionResult;
+  attachedFile?: AttachedFile;
+  /** True while tokens are still streaming into this message. */
+  isStreaming?: boolean;
+  /** [Source N] numbers the answer cited that were NOT retrieved (hallucinated). */
+  unverifiedCitations?: number[];
 }
 
 // --- Chat Session (frontend session management) ---
@@ -45,6 +63,8 @@ export interface ChatSession {
   title: string;
   createdAt: Date;
   messages: ChatMessage[];
+  /** True once the user manually renamed it — stops auto-title derivation. */
+  titleCustom?: boolean;
 }
 
 // --- Health Status (from /api/health) ---
@@ -67,6 +87,34 @@ export interface ChatResponse {
   pending_action: PendingAction | null;
   session_id: string;
 }
+
+// --- Streaming (NDJSON) events from POST /api/chat/stream ---
+export interface StreamStartEvent {
+  type: "start";
+  session_id: string;
+  role: string;
+}
+export interface StreamDeltaEvent {
+  type: "delta";
+  text: string;
+}
+export interface StreamFinalEvent {
+  type: "final";
+  session_id: string;
+  citations: Citation[];
+  unverified_citations: number[];
+  pending_action: PendingAction | null;
+  response: string;
+}
+export interface StreamErrorEvent {
+  type: "error";
+  detail: string;
+}
+export type StreamEvent =
+  | StreamStartEvent
+  | StreamDeltaEvent
+  | StreamFinalEvent
+  | StreamErrorEvent;
 
 export interface ActionApprovalRequest {
   session_id: string;
@@ -92,4 +140,11 @@ export interface StatsResponse {
   index_name: string;
   total_chunks: number;
   search_endpoint: string;
+}
+
+export interface FileUploadResponse {
+  file_id: string;
+  filename: string;
+  size_bytes: number;
+  preview: string;
 }

@@ -8,6 +8,7 @@ import { CitationsPanel } from "@/components/citations/CitationsPanel";
 import { useChat } from "@/hooks/useChat";
 import { useHealth } from "@/hooks/useHealth";
 import { useSessions } from "@/hooks/useSessions";
+import { downloadConversation } from "@/lib/export";
 import type { Citation, ChatMessage } from "@/lib/types";
 
 export function ChatLayout() {
@@ -18,12 +19,22 @@ export function ChatLayout() {
     createSession,
     switchSession,
     deleteSession,
+    renameSession,
     persistMessages,
   } = useSessions();
 
   const sessionId = activeId || "default";
-  const { messages, isLoading, error, sendMessage, approveAction, setMessages } =
-    useChat(sessionId);
+  const {
+    messages,
+    isLoading,
+    isStreaming,
+    error,
+    sendMessage,
+    regenerate,
+    stopGeneration,
+    approveAction,
+    setMessages,
+  } = useChat(sessionId);
 
   const { health } = useHealth();
 
@@ -87,6 +98,10 @@ export function ChatLayout() {
     setSidebarOpen(false);
   }, [createSession]);
 
+  const handleExport = useCallback(() => {
+    downloadConversation(messages, activeSession?.title || "Conversation");
+  }, [messages, activeSession]);
+
   // Responsive: detect desktop
   const [isDesktop, setIsDesktop] = useState(true);
   useEffect(() => {
@@ -121,6 +136,7 @@ export function ChatLayout() {
                 setSidebarOpen(false);
               }}
               onDeleteSession={deleteSession}
+              onRenameSession={renameSession}
               onClose={() => setSidebarOpen(false)}
               showCloseButton={!isDesktop}
             />
@@ -134,14 +150,18 @@ export function ChatLayout() {
           health={health}
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           showMenuButton={!isDesktop}
+          onExportConversation={messages.length > 0 ? handleExport : undefined}
         />
         <ChatArea
           messages={messages}
           isLoading={isLoading}
+          isStreaming={isStreaming}
           error={error}
           onSendMessage={sendMessage}
           onCitationClick={handleCitationClick}
           onApproveAction={approveAction}
+          onRegenerate={regenerate}
+          onStop={stopGeneration}
         />
       </main>
 

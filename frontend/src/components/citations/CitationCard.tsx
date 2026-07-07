@@ -47,6 +47,15 @@ export function CitationCard({ citation, isSelected, onClick }: CitationCardProp
 
         {/* Metadata */}
         <div className="flex flex-wrap gap-1.5">
+          {citation.cited === false && (
+            <Badge
+              variant="secondary"
+              className="text-xs text-muted-foreground"
+              title="Retrieved as context but not referenced in the answer."
+            >
+              not referenced
+            </Badge>
+          )}
           {citation.section && (
             <Badge variant="secondary" className="text-xs">
               {citation.section}

@@ -1,11 +1,12 @@
 "use client";
 
-import { User, Stethoscope } from "lucide-react";
+import { User, Stethoscope, AlertTriangle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Badge } from "@/components/ui/badge";
 import { ActionApprovalCard } from "@/components/actions/ActionApprovalCard";
 import { ActionResultCard } from "@/components/actions/ActionResultCard";
+import { MessageActions } from "./MessageActions";
 import type { ChatMessage, Citation } from "@/lib/types";
 import { formatTimestamp } from "@/lib/utils";
 
@@ -13,18 +14,21 @@ interface MessageBubbleProps {
   message: ChatMessage;
   onCitationClick?: (citations: Citation[]) => void;
   onApproveAction?: (messageId: string, approved: boolean) => void;
+  /** Show a regenerate control (only for the latest assistant message). */
+  onRegenerate?: () => void;
 }
 
 export function MessageBubble({
   message,
   onCitationClick,
   onApproveAction,
+  onRegenerate,
 }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
   return (
     <div
-      className={`flex items-start gap-3 px-4 py-3 ${
+      className={`group flex items-start gap-3 px-4 py-3 ${
         isUser ? "flex-row-reverse" : ""
       }`}
     >
@@ -59,12 +63,38 @@ export function MessageBubble({
             <p className="text-sm whitespace-pre-wrap">{message.content}</p>
           ) : (
             <div className="markdown-content text-sm">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {message.content}
-              </ReactMarkdown>
+              {message.content && (
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {message.content}
+                </ReactMarkdown>
+              )}
+              {message.isStreaming && (
+                <span
+                  className="inline-block w-1.5 h-4 -mb-0.5 bg-primary/70 animate-pulse"
+                  aria-label="Streaming response"
+                />
+              )}
             </div>
           )}
         </div>
+
+        {/* Unverified citation warnings: [Source N] the answer cited but that
+            was NOT retrieved (potential hallucinated reference). */}
+        {message.unverifiedCitations && message.unverifiedCitations.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-1.5">
+            {message.unverifiedCitations.map((n) => (
+              <Badge
+                key={n}
+                variant="destructive"
+                className="text-xs gap-1"
+                title="This source was cited in the answer but was not among the retrieved documents."
+              >
+                <AlertTriangle className="w-3 h-3" />
+                Unverified [Source {n}]
+              </Badge>
+            ))}
+          </div>
+        )}
 
         {/* Citation badges */}
         {message.citations && message.citations.length > 0 && (
@@ -96,14 +126,23 @@ export function MessageBubble({
           <ActionResultCard result={message.actionResult} />
         )}
 
-        {/* Timestamp */}
-        <p
-          className={`text-xs text-muted-foreground mt-1 ${
-            isUser ? "text-right" : "text-left"
+        {/* Timestamp + hover actions */}
+        <div
+          className={`flex items-center gap-2 mt-1 ${
+            isUser ? "flex-row-reverse" : "flex-row"
           }`}
         >
-          {formatTimestamp(message.timestamp)}
-        </p>
+          <p className="text-xs text-muted-foreground">
+            {formatTimestamp(message.timestamp)}
+          </p>
+          {!message.isStreaming && !message.pendingAction && (
+            <MessageActions
+              content={message.content}
+              align={isUser ? "right" : "left"}
+              onRegenerate={!isUser ? onRegenerate : undefined}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

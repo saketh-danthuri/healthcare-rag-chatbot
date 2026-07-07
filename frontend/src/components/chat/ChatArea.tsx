@@ -8,19 +8,25 @@ import type { ChatMessage, Citation } from "@/lib/types";
 interface ChatAreaProps {
   messages: ChatMessage[];
   isLoading: boolean;
+  isStreaming: boolean;
   error: string | null;
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, fileId?: string, filename?: string) => void;
   onCitationClick: (citations: Citation[]) => void;
   onApproveAction: (messageId: string, approved: boolean) => void;
+  onRegenerate: () => void;
+  onStop: () => void;
 }
 
 export function ChatArea({
   messages,
   isLoading,
+  isStreaming,
   error,
   onSendMessage,
   onCitationClick,
   onApproveAction,
+  onRegenerate,
+  onStop,
 }: ChatAreaProps) {
   return (
     <div className="flex-1 flex flex-col min-h-0">
@@ -40,11 +46,17 @@ export function ChatArea({
           isLoading={isLoading}
           onCitationClick={onCitationClick}
           onApproveAction={onApproveAction}
+          onRegenerate={onRegenerate}
         />
       )}
 
       {/* Input */}
-      <ChatInput onSend={onSendMessage} isLoading={isLoading} />
+      <ChatInput
+        onSend={onSendMessage}
+        isLoading={isLoading}
+        isStreaming={isStreaming}
+        onStop={onStop}
+      />
     </div>
   );
 }

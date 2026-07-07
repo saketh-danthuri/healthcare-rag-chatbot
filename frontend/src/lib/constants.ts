@@ -29,12 +29,18 @@ export const ACTION_TYPE_LABELS: Record<string, string> = {
   send_escalation_email: "Send Escalation Email",
   send_email: "Send Escalation Email",
   query_database: "Query Database",
+  publish_to_confluence: "Publish to Confluence",
+  publish_confluence: "Publish to Confluence",
 };
 
 /** Map tool_name from backend to action_type for approval endpoint */
 export const TOOL_TO_ACTION_TYPE: Record<string, string> = {
   send_escalation_email: "send_email",
   query_database: "query_database",
+  publish_to_confluence: "publish_confluence",
 };
 
 export const HEALTH_POLL_INTERVAL = 30000; // 30 seconds
+
+/** Max transcript upload size accepted client-side (server also enforces). */
+export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MB

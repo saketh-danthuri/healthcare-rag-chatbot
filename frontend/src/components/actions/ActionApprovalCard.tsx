@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmailPreview } from "./EmailPreview";
 import { QueryPreview } from "./QueryPreview";
+import { ConfluencePreview } from "./ConfluencePreview";
 import type { PendingAction } from "@/lib/types";
 import { ACTION_TYPE_LABELS } from "@/lib/constants";
 import { useState } from "react";
@@ -52,6 +53,8 @@ export function ActionApprovalCard({
           <EmailPreview arguments={action.arguments} />
         ) : action.tool_name === "query_database" ? (
           <QueryPreview arguments={action.arguments} />
+        ) : action.tool_name === "publish_to_confluence" ? (
+          <ConfluencePreview arguments={action.arguments} />
         ) : (
           <pre className="text-xs bg-muted p-2 rounded overflow-x-auto">
             {JSON.stringify(action.arguments, null, 2)}

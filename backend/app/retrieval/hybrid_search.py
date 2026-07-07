@@ -1,31 +1,35 @@
 """
-hybrid_search.py - Azure AI Search Hybrid Search
-===================================================
+hybrid_search.py - Local Hybrid Search (Chroma + BM25 + RRF)
+=============================================================
 WHY HYBRID SEARCH:
   Semantic search alone misses exact keyword matches. If someone asks about
-  "CFT303A", pure semantic search might return chunks about similar-sounding
-  but different jobs. BM25 keyword search catches exact matches.
+  "CFT303A", pure vector search might return chunks about similar-sounding but
+  different jobs. BM25 keyword search catches exact matches.
 
-  Azure AI Search handles this natively in a single API call:
-  1. Vector search (cosine similarity on content_vector field)
-  2. BM25 keyword search (full-text search on content field via en.lucene analyzer)
-  3. Reciprocal Rank Fusion (RRF) - merges and re-ranks both result sets
+Azure AI Search used to do vector + BM25 + RRF server-side in one call. Running
+fully local, we reproduce that here:
+  1. Vector search over a local ChromaDB collection (cosine on 384-dim
+     sentence-transformers embeddings).
+  2. BM25 keyword search (rank_bm25) over the same corpus, held in memory.
+  3. Reciprocal Rank Fusion (RRF) merges the two ranked lists.
 
-  This replaces the previous ChromaDB + in-memory BM25 + manual RRF approach
-  with one SDK call, dramatically simplifying the pipeline.
+The corpus for BM25 is pulled from Chroma once per process and cached (keyed by
+the collection's document count so a re-ingest is picked up).
 """
 
 import logging
+import re
 from dataclasses import dataclass
 
-from azure.core.credentials import AzureKeyCredential
-from azure.search.documents import SearchClient
-from azure.search.documents.models import VectorizedQuery
+from rank_bm25 import BM25Okapi
 
-from app.config.settings import get_settings
-from app.ingestion.embedder import generate_embeddings, get_openai_client
+from app.retrieval.local_embeddings import embed_texts
+from app.retrieval.vector_store import get_collection
 
 logger = logging.getLogger(__name__)
+
+# RRF constant: larger => flatter weighting across ranks. 60 is the common default.
+RRF_K = 60
 
 
 @dataclass
@@ -41,39 +45,55 @@ class SearchResult:
     score: float
     metadata: dict
     chunk_id: str
-    source: str  # always "hybrid" with Azure AI Search
+    source: str  # always "hybrid"
 
 
-def get_search_client() -> SearchClient:
-    """Create an Azure AI Search client configured from settings."""
-    settings = get_settings()
-    return SearchClient(
-        endpoint=settings.azure_search_endpoint,
-        index_name=settings.azure_search_index_name,
-        credential=AzureKeyCredential(settings.azure_search_api_key),
-    )
+def _tokenize(text: str) -> list[str]:
+    """Lowercase word tokenizer for BM25 (also splits IDs like CFT303A)."""
+    return re.findall(r"[a-z0-9]+", text.lower())
 
 
-def _build_odata_filter(filter_metadata: dict | None = None) -> str | None:
-    """Convert a metadata filter dict to an OData filter expression.
+# --- In-memory BM25 corpus cache -------------------------------------------
+# Cached tuple: (count, ids, documents, metadatas, BM25Okapi). Rebuilt when the
+# collection's document count changes (e.g., after re-ingestion).
+_bm25_cache: dict = {}
 
-    Examples:
-        {"doc_type": "runbook"} -> "doc_type eq 'runbook'"
-        {"doc_type": "runbook", "job_id": "CFT303A"} -> "doc_type eq 'runbook' and job_id eq 'CFT303A'"
-    """
+
+def _load_corpus() -> tuple[list[str], list[str], list[dict], BM25Okapi | None]:
+    """Load all chunks from Chroma and build (or reuse) the BM25 index."""
+    collection = get_collection()
+    count = collection.count()
+
+    cached = _bm25_cache.get("data")
+    if cached is not None and _bm25_cache.get("count") == count:
+        return cached
+
+    if count == 0:
+        empty: tuple = ([], [], [], None)
+        _bm25_cache["count"] = 0
+        _bm25_cache["data"] = empty
+        return empty
+
+    data = collection.get(include=["documents", "metadatas"])
+    ids = data.get("ids", [])
+    documents = data.get("documents", []) or []
+    metadatas = data.get("metadatas", []) or [{} for _ in ids]
+
+    tokenized = [_tokenize(doc) for doc in documents]
+    bm25 = BM25Okapi(tokenized) if tokenized else None
+
+    result = (ids, documents, metadatas, bm25)
+    _bm25_cache["count"] = count
+    _bm25_cache["data"] = result
+    logger.info(f"Built BM25 index over {len(ids)} chunks")
+    return result
+
+
+def _matches_filter(metadata: dict, filter_metadata: dict | None) -> bool:
+    """True if metadata satisfies every key/value in the filter."""
     if not filter_metadata:
-        return None
-
-    clauses = []
-    for key, value in filter_metadata.items():
-        if isinstance(value, str):
-            clauses.append(f"{key} eq '{value}'")
-        elif isinstance(value, int | float):
-            clauses.append(f"{key} eq {value}")
-        elif isinstance(value, bool):
-            clauses.append(f"{key} eq {'true' if value else 'false'}")
-
-    return " and ".join(clauses) if clauses else None
+        return True
+    return all(str(metadata.get(k, "")) == str(v) for k, v in filter_metadata.items())
 
 
 def hybrid_search(
@@ -82,80 +102,70 @@ def hybrid_search(
     final_k: int = 10,
     filter_metadata: dict | None = None,
 ) -> list[SearchResult]:
-    """Run hybrid search: semantic + BM25 + RRF via Azure AI Search.
-
-    This is the main search function used by the retriever. Azure AI Search
-    does vector search, BM25, and Reciprocal Rank Fusion in a single API call.
+    """Run hybrid search: vector (Chroma) + BM25 + Reciprocal Rank Fusion.
 
     Args:
         query: User's search query
-        top_k: How many nearest neighbors for vector search
+        top_k: How many candidates to pull from each of vector and BM25
         final_k: How many final results to return after fusion
         filter_metadata: Optional metadata filters (e.g., {"doc_type": "runbook"})
 
     Returns:
         Top final_k SearchResult objects from hybrid search
     """
-    search_client = get_search_client()
+    ids, documents, metadatas, bm25 = _load_corpus()
+    if not ids:
+        logger.warning("Vector store is empty - no documents indexed yet")
+        return []
 
-    # Generate query embedding for vector search
-    openai_client = get_openai_client()
-    query_embedding = generate_embeddings([query], openai_client)[0]
+    # Map chunk_id -> (content, metadata) for assembling results.
+    by_id = {cid: (documents[i], metadatas[i] or {}) for i, cid in enumerate(ids)}
 
-    # Build OData filter if provided
-    odata_filter = _build_odata_filter(filter_metadata)
+    # --- 1. Vector search via Chroma ---
+    query_embedding = embed_texts([query])[0]
+    vector_ranked: list[str] = []
+    try:
+        vres = get_collection().query(
+            query_embeddings=[query_embedding],
+            n_results=min(top_k, len(ids)),
+        )
+        vector_ranked = vres.get("ids", [[]])[0]
+    except Exception as e:  # pragma: no cover - defensive
+        logger.warning(f"Vector query failed: {e}")
 
-    # Single API call: Azure AI Search does vector + BM25 + RRF internally
-    results = search_client.search(
-        search_text=query,  # Native BM25 full-text search
-        vector_queries=[
-            VectorizedQuery(
-                vector=query_embedding,
-                k_nearest_neighbors=top_k,
-                fields="content_vector",
-            )
-        ],
-        top=final_k,  # Azure does RRF internally and returns top results
-        filter=odata_filter,
-        select=[
-            "chunk_id",
-            "content",
-            "source_file",
-            "doc_type",
-            "job_id",
-            "section",
-            "page_number",
-            "folder",
-            "source_path",
-            "file_type",
-            "chunk_index",
-        ],
-    )
+    # --- 2. BM25 keyword search ---
+    bm25_ranked: list[str] = []
+    if bm25 is not None:
+        scores = bm25.get_scores(_tokenize(query))
+        ranked_idx = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)
+        bm25_ranked = [ids[i] for i in ranked_idx[:top_k] if scores[i] > 0]
 
-    search_results = []
-    for result in results:
-        # Build metadata dict from Azure Search fields
-        metadata = {
-            "source_file": result.get("source_file", "Unknown"),
-            "doc_type": result.get("doc_type", ""),
-            "job_id": result.get("job_id", ""),
-            "section": result.get("section", ""),
-            "page_number": result.get("page_number", ""),
-            "folder": result.get("folder", ""),
-            "source_path": result.get("source_path", ""),
-            "file_type": result.get("file_type", ""),
-            "chunk_index": result.get("chunk_index", 0),
-        }
+    # --- 3. Reciprocal Rank Fusion ---
+    rrf: dict[str, float] = {}
+    for ranked in (vector_ranked, bm25_ranked):
+        for rank, cid in enumerate(ranked):
+            rrf[cid] = rrf.get(cid, 0.0) + 1.0 / (RRF_K + rank + 1)
 
-        search_results.append(
+    fused = sorted(rrf.items(), key=lambda kv: kv[1], reverse=True)
+
+    results: list[SearchResult] = []
+    for cid, score in fused:
+        if cid not in by_id:
+            continue
+        content, metadata = by_id[cid]
+        if not _matches_filter(metadata, filter_metadata):
+            continue
+        results.append(
             SearchResult(
-                content=result["content"],
-                score=result["@search.score"],
-                metadata=metadata,
-                chunk_id=result["chunk_id"],
+                content=content,
+                score=float(score),
+                metadata=dict(metadata),
+                chunk_id=cid,
                 source="hybrid",
             )
         )
+        if len(results) >= final_k:
+            break
 
-    logger.debug(f"Azure AI Search returned {len(search_results)} hybrid results")
-    return search_results
+    logger.debug(f"Hybrid search returned {len(results)} results")
+    return results

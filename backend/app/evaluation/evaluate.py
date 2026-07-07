@@ -71,14 +71,11 @@ def generate_answers_for_evaluation(samples: list[dict]) -> list[dict]:
     added, ready for RAGAS evaluation.
     """
     import yaml
-    from openai import AzureOpenAI
+
+    from app.llm import get_openai_client
 
     settings = get_settings()
-    client = AzureOpenAI(
-        azure_endpoint=settings.azure_openai_endpoint,
-        api_key=settings.azure_openai_api_key,
-        api_version=settings.azure_openai_api_version,
-    )
+    client = get_openai_client()
 
     # Load RAG prompt template
     prompts_path = Path(__file__).parent.parent / "config" / "prompts.yaml"
@@ -101,7 +98,7 @@ def generate_answers_for_evaluation(samples: list[dict]) -> list[dict]:
         # Generate answer
         prompt = rag_prompt.format(context=context, question=question)
         response = client.chat.completions.create(
-            model=settings.azure_openai_chat_deployment,
+            model=settings.ollama_chat_model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt},
@@ -131,7 +128,6 @@ def run_ragas_evaluation(samples: list[dict]) -> dict:
     """
     try:
         from datasets import Dataset
-        from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings
         from ragas import evaluate
         from ragas.metrics import (
             answer_relevancy,
@@ -140,29 +136,19 @@ def run_ragas_evaluation(samples: list[dict]) -> dict:
             faithfulness,
         )
 
-        settings = get_settings()
+        from app.evaluation.local_ragas import LocalEmbeddings
+        from app.llm import get_chat_model
 
-        # RAGAS needs an LLM and embeddings for computing metrics.
-        # Without these, it defaults to llm_factory() which tries standard
-        # OpenAI (not Azure) and fails with OPENAI_API_KEY missing.
-        azure_llm = AzureChatOpenAI(
-            azure_endpoint=settings.azure_openai_endpoint,
-            api_key=settings.azure_openai_api_key,
-            api_version=settings.azure_openai_api_version,
-            azure_deployment=settings.azure_openai_chat_deployment,
-            temperature=0,
-        )
-        azure_embeddings = AzureOpenAIEmbeddings(
-            azure_endpoint=settings.azure_openai_endpoint,
-            api_key=settings.azure_openai_api_key,
-            api_version=settings.azure_openai_api_version,
-            azure_deployment=settings.azure_openai_embedding_deployment,
-        )
+        # RAGAS needs an LLM and embeddings for computing metrics. We give it
+        # the local Ollama chat model and the local sentence-transformers
+        # embeddings so no cloud account is required.
+        judge_llm = get_chat_model(temperature=0, max_tokens=1024)
+        judge_embeddings = LocalEmbeddings()
 
         # Convert to HuggingFace Dataset format (required by RAGAS)
         dataset = Dataset.from_list(samples)
 
-        # Run evaluation with explicit Azure OpenAI LLM and embeddings
+        # Run evaluation with explicit local LLM and embeddings
         result = evaluate(
             dataset=dataset,
             metrics=[
@@ -171,8 +157,8 @@ def run_ragas_evaluation(samples: list[dict]) -> dict:
                 context_precision,
                 context_recall,
             ],
-            llm=azure_llm,
-            embeddings=azure_embeddings,
+            llm=judge_llm,
+            embeddings=judge_embeddings,
         )
 
         # RAGAS may return per-sample lists or aggregated floats depending

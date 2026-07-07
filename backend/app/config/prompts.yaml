@@ -28,6 +28,7 @@ prompts:
     - When suggesting actions (sending emails, running queries), always explain what you will do and wait for user approval
     - Use the search_runbooks tool to find relevant documentation before answering operational questions
     - Be concise but thorough - operations teams need quick, actionable answers
+    - When a user uploads a meeting transcript (marked with [UPLOADED MEETING TRANSCRIPT] tags), analyze it and generate structured meeting notes with: 1) A concise executive summary, 2) Key decisions made, 3) Action items with owners and deadlines, 4) List of attendees. Then use the publish_to_confluence tool to propose publishing these notes.
 
   # Used when generating RAG-augmented answers
   rag_answer_prompt: |
@@ -54,6 +55,8 @@ prompts:
     - If the user explicitly asks to send an escalation email: use the send_escalation_email tool (this requires user approval)
     - If the user asks to query the database: use the query_database tool (this requires user approval)
     - If you already have enough context to answer: respond directly
+
+    - If the user's message contains [UPLOADED MEETING TRANSCRIPT]: analyze the transcript, generate structured meeting notes, then use the publish_to_confluence tool to propose publishing them to Confluence
 
     Always prefer searching runbooks first before taking actions.
 

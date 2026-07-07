@@ -22,7 +22,7 @@ NOTE: Authentication is OPTIONAL during local development.
 
 import logging
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, Header, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.config.settings import get_settings
@@ -51,6 +51,7 @@ class UserInfo:
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(security),
+    x_user_id: str | None = Header(default=None, alias="X-User-Id"),
 ) -> UserInfo:
     """Dependency that validates the JWT and returns user info.
 
@@ -62,13 +63,20 @@ async def get_current_user(
     WHY Depends pattern: FastAPI's dependency injection runs this before
     the route handler. If auth fails, the request is rejected with 401
     before any business logic runs.
+
+    IDENTITY FOR MEMORY: when SSO is enabled the user_id comes from the JWT.
+    When SSO is disabled (local/dev), we fall back to the client-supplied
+    X-User-Id header (a stable per-browser UUID) instead of the constant
+    "anonymous", so the memory layer can namespace conversations per user.
+    Swapping to real SSO later is just a different user_id string -- no schema
+    change.
     """
     settings = get_settings()
 
-    # Skip auth in local development if not configured
+    # Skip JWT validation in local development if not configured.
     if not settings.azure_tenant_id:
         logger.debug("Auth disabled (AZURE_TENANT_ID not set)")
-        return UserInfo()
+        return UserInfo(user_id=x_user_id or "anonymous")
 
     if not credentials:
         raise HTTPException(

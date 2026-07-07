@@ -7,7 +7,7 @@ fastapi==0.115.6
 uvicorn[standard]==0.34.0
 python-multipart==0.0.18
 
-# --- Azure OpenAI (LLM + Embeddings via Azure AI Foundry) ---
+# --- OpenAI SDK (used to talk to the local Ollama server via its /v1 API) ---
 openai==1.58.1
 
 # --- LangChain + LangGraph (Agent orchestration) ---
@@ -16,14 +16,11 @@ langchain-openai==0.3.0
 langchain-community==0.3.13
 langgraph==0.2.60
 
-# --- Azure AI Search (hybrid search: vector + BM25 + RRF in one call) ---
-azure-search-documents==11.6.0
-azure-core==1.32.0
+# --- Local vector store (hybrid search: Chroma vector + BM25 + RRF) ---
+chromadb>=0.5,<2       # Local, on-disk vector database
+rank-bm25==0.2.2       # In-memory BM25 keyword ranking, fused with vectors via RRF
 
-# --- Azure Blob Storage (document source) ---
-azure-storage-blob==12.24.0
-
-# --- Cross-Encoder Re-ranking ---
+# --- Local embeddings + Cross-Encoder Re-ranking (sentence-transformers) ---
 sentence-transformers==3.3.1
 
 # --- Document Processing ---
@@ -39,22 +36,27 @@ pydantic==2.10.3          # Settings and data validation
 pydantic-settings==2.7.0  # Environment variable management
 
 # --- Database (PostgreSQL) ---
-asyncpg==0.30.0           # Async PostgreSQL driver
+asyncpg==0.30.0           # Async PostgreSQL driver (read-only ops queries)
 sqlalchemy[asyncio]==2.0.36
 openpyxl==3.1.5           # Excel file creation
+
+# --- Memory Layer (durable agent state + interactions store) ---
+# psycopg3 is required by langgraph-checkpoint-postgres (NOT asyncpg).
+# Verify compatibility with the pinned langgraph version at install time.
+psycopg[binary,pool]==3.2.3              # psycopg3 + connection pool for the checkpointer
+langgraph-checkpoint-postgres==2.0.13    # Durable LangGraph checkpointer backed by Postgres
 
 # --- Email ---
 aiosmtplib==3.0.2         # Async email sending
 
-# --- Authentication (Azure Entra ID) ---
+# --- Authentication (optional Azure Entra ID; disabled when AZURE_TENANT_ID="") ---
 fastapi-azure-auth==5.0.0
 python-jose[cryptography]==3.3.0
 
 # --- Monitoring ---
-azure-monitor-opentelemetry==1.6.4
-opentelemetry-api==1.29.0
-opentelemetry-sdk==1.29.0
-opentelemetry-instrumentation-fastapi==0.50b0
+# Azure Monitor is removed for local mode. opentelemetry is pulled in
+# transitively by chromadb; telemetry stays disabled with an empty
+# APPLICATIONINSIGHTS_CONNECTION_STRING.
 
 # --- RAG Evaluation ---
 ragas==0.2.8
@@ -67,6 +69,12 @@ httpx==0.28.1             # Async HTTP client for testing
 
 # --- Linting ---
 ruff==0.9.6
+
+# --- Pre-Agent Guardrails ---
+tiktoken==0.8.0           # Exact BPE token counting for gpt-4o-mini (cost checker)
+presidio-analyzer==2.2.354   # Microsoft Presidio PHI/PII detection (healthcare standard)
+presidio-anonymizer==2.2.354 # Microsoft Presidio PHI/PII masking
+spacy==3.8.3              # NLP engine required by Presidio (run: python -m spacy download en_core_web_lg)
 
 # --- Utilities ---
 python-dotenv==1.0.1
