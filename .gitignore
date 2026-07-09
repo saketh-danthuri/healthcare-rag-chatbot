@@ -49,7 +49,6 @@ htmlcov/
 # Logs
 *.log
 
-# Large files (documents stay in Docs/ but don't need to be in git)
-# Uncomment the next line if you don't want docs in version control:
-# Docs/
+# Internal documents (kept locally for RAG ingestion, never committed)
+Docs/
 *.zip
